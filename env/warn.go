@@ -49,14 +49,14 @@ func WarnCredentialEnv(w io.Writer, envMap map[string]string, hints map[string][
 			fmt.Fprintf(w, "  To hide it from the agent, use a provider instead:\n")
 			seen := map[string]struct{}{}
 			for _, h := range hs {
-				line := fmt.Sprintf("osg provider create --name my-%s --type %s --credential %s", h.ProviderType, h.ProviderType, key)
+				line := fmt.Sprintf("whaleshell provider create --name my-%s --type %s --credential %s", h.ProviderType, h.ProviderType, key)
 				if _, ok := seen[line]; ok {
 					continue
 				}
 				seen[line] = struct{}{}
 				fmt.Fprintf(w, "    %s\n", line)
 			}
-			fmt.Fprintf(w, "    osg sandbox create --provider my-<name> …\n")
+			fmt.Fprintf(w, "    whaleshell sandbox create --provider my-<name> …\n")
 		}
 		fmt.Fprintf(w, "  See: docs/CREDENTIALS.md (use --no-credential-warnings to silence)\n\n")
 	}

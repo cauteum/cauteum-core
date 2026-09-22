@@ -1,24 +1,24 @@
-<h1 align="center">osg-core</h1>
+<h1 align="center">whaleshell-core</h1>
 
 <p align="center">
   <strong>Policy & egress engine</strong><br>
   Canonical policy schema, L4/L7 allowlists, host patterns, TOFU, and env placeholders.
 </p>
 <p align="center">
-  <a href="https://github.com/zorneth/osg-core/actions/workflows/ci.yml"><img src="https://github.com/zorneth/osg-core/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="https://pkg.go.dev/github.com/zorneth/osg-core"><img src="https://pkg.go.dev/badge/github.com/zorneth/osg-core.svg" alt="Go Reference"></a>
+  <a href="https://github.com/whaleshell/whaleshell-core/actions/workflows/ci.yml"><img src="https://github.com/whaleshell/whaleshell-core/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://pkg.go.dev/github.com/whaleshell/whaleshell-core"><img src="https://pkg.go.dev/badge/github.com/whaleshell/whaleshell-core.svg" alt="Go Reference"></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License"></a>
-  <a href="https://github.com/zorneth/osg-core"><img src="https://img.shields.io/badge/Go-1.27+-00ADD8?logo=go" alt="Go Version"></a>
+  <a href="https://github.com/whaleshell/whaleshell-core"><img src="https://img.shields.io/badge/Go-1.27+-00ADD8?logo=go" alt="Go Version"></a>
 </p>
 <p align="center">
-  <sub>Part of the <a href="https://github.com/zorneth">zorneth / osg</a> ecosystem</sub>
+  <sub>Part of the <a href="https://github.com/whaleshell">whaleshell / whaleshell</a> ecosystem</sub>
 </p>
 
 ---
 
 ## Overview
 
-**osg-core** is the shared policy library for osg. Every data-plane and control-plane component evaluates egress and filesystem rules from this schema.
+**whaleshell-core** is the shared policy library for whaleshell. Every data-plane and control-plane component evaluates egress and filesystem rules from this schema.
 
 ### Key Features
 
@@ -27,7 +27,7 @@
 | **Schema** | `filesystem_policy`, `landlock`, `network_policies`, inference, display, credentials |
 | **Engine** | Default-deny allowlist with L7 REST / GraphQL / MCP matching |
 | **Hosts** | Glob host patterns (`**.example.com`), ports, binaries, credential binding |
-| **Inference** | Builtin provider presets (`anthropic`, `openai`, `local` → `host.osg.internal`) |
+| **Inference** | Builtin provider presets (`anthropic`, `openai`, `local` → `host.whaleshell.internal`) |
 | **Safety** | Binary TOFU store, env placeholder expansion for guest inject |
 
 ---
@@ -35,7 +35,7 @@
 ## Installation
 
 ```bash
-go get github.com/zorneth/osg-core@latest
+go get github.com/whaleshell/whaleshell-core@latest
 ```
 
 **Requirements:** Go 1.27+
@@ -50,8 +50,8 @@ package main
 import (
     "fmt"
 
-    "github.com/zorneth/osg-core/engine"
-    "github.com/zorneth/osg-core/policy"
+    "github.com/whaleshell/whaleshell-core/engine"
+    "github.com/whaleshell/whaleshell-core/policy"
 )
 
 func main() {
@@ -89,10 +89,10 @@ func main() {
 | Resource | Link |
 |----------|------|
 | Roadmap | [ROADMAP.md](./ROADMAP.md) |
-| Organization | [https://github.com/zorneth](https://github.com/zorneth) |
-| Organization overview | [github.com/zorneth](https://github.com/zorneth) |
-| pkg.go.dev | [`github.com/zorneth/osg-core`](https://pkg.go.dev/github.com/zorneth/osg-core) |
+| Organization | [https://github.com/whaleshell](https://github.com/whaleshell) |
+| Organization overview | [github.com/whaleshell](https://github.com/whaleshell) |
+| pkg.go.dev | [`github.com/whaleshell/whaleshell-core`](https://pkg.go.dev/github.com/whaleshell/whaleshell-core) |
 
 ## License
 
-[MIT](./LICENSE) © zorneth
+[MIT](./LICENSE) © whaleshell

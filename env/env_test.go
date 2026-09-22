@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/zorneth/osg-core/env"
+	"github.com/whaleshell/whaleshell-core/env"
 )
 
 func TestFromHostForGuestNoGlobalAPIKeys(t *testing.T) {

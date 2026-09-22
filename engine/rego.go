@@ -9,9 +9,9 @@ import (
 )
 
 // RegoGate is an optional post-allow deny hook.
-// Supports lightweight osg-rego lines and a subset of Rego equality checks:
+// Supports lightweight whaleshell-rego lines and a subset of Rego equality checks:
 //
-//	# osg-rego
+//	# whaleshell-rego
 //	deny host evil.example.com
 //	deny method DELETE
 //	deny path /admin/**
@@ -25,7 +25,7 @@ type RegoGate struct {
 	denyPaths   []string
 }
 
-// LoadRegoFile loads an optional deny-list Rego/osg-rego file.
+// LoadRegoFile loads an optional deny-list Rego/whaleshell-rego file.
 func LoadRegoFile(pathName string) (*RegoGate, error) {
 	pathName = strings.TrimSpace(pathName)
 	if pathName == "" {

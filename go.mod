@@ -1,4 +1,4 @@
-module github.com/zorneth/osg-core
+module github.com/whaleshell/whaleshell-core
 
 go 1.27.0
 

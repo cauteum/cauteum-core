@@ -3,7 +3,7 @@ package policy_test
 import (
 	"testing"
 
-	"github.com/zorneth/osg-core/policy"
+	"github.com/whaleshell/whaleshell-core/policy"
 )
 
 func TestParseEndpointSpec(t *testing.T) {

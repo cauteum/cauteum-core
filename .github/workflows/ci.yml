@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: Copyright (c) 2026 the osg authors
+# SPDX-FileCopyrightText: Copyright (c) 2026 the whaleshell authors
 # SPDX-License-Identifier: MIT
 #
 # gogpu-style CI: format, lint, cross-platform build + test

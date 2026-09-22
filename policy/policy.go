@@ -9,7 +9,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/zorneth/osg-core/defaults"
+	"github.com/whaleshell/whaleshell-core/defaults"
 	"gopkg.in/yaml.v3"
 )
 
@@ -80,7 +80,7 @@ type AllowRule struct {
 	AllowedIPs []string     `yaml:"allowed_ips,omitempty" json:"allowed_ips,omitempty"`
 	// Enforcement is enforce (default) or audit.
 	Enforcement string `yaml:"enforcement,omitempty" json:"enforcement,omitempty"`
-	// CredentialKeys binds osg:resolve:env:KEY rewrite to this endpoint.
+	// CredentialKeys binds whaleshell:resolve:env:KEY rewrite to this endpoint.
 	CredentialKeys               []string `yaml:"credential_keys,omitempty" json:"credential_keys,omitempty"`
 	WebsocketCredentialRewrite   bool     `yaml:"websocket_credential_rewrite,omitempty" json:"websocket_credential_rewrite,omitempty"`
 	RequestBodyCredentialRewrite bool     `yaml:"request_body_credential_rewrite,omitempty" json:"request_body_credential_rewrite,omitempty"`
@@ -88,7 +88,7 @@ type AllowRule struct {
 	AllowUninspectedCredentials  bool     `yaml:"allow_uninspected_credentials,omitempty" json:"allow_uninspected_credentials,omitempty"`
 }
 
-// Display is the noVNC surface (osg product extension).
+// Display is the noVNC surface (whaleshell product extension).
 type Display struct {
 	Mode    string `yaml:"mode,omitempty" json:"mode,omitempty"` // none | novnc
 	Publish string `yaml:"publish,omitempty" json:"publish,omitempty"`
@@ -97,7 +97,7 @@ type Display struct {
 	Browser string `yaml:"browser,omitempty" json:"browser,omitempty"`
 }
 
-// Credentials controls host-side env injection (osg product extension).
+// Credentials controls host-side env injection (whaleshell product extension).
 type Credentials struct {
 	EnvAllow    []string `yaml:"env_allow,omitempty" json:"env_allow,omitempty"`
 	WriteToDisk bool     `yaml:"write_to_disk,omitempty" json:"write_to_disk,omitempty"`

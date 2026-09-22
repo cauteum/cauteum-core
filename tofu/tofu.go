@@ -41,16 +41,16 @@ func Open(path string) (*Store, error) {
 	return s, s.flushLocked()
 }
 
-// DefaultPath returns $XDG_STATE_HOME/osg/binary-tofu.json (or ~/.local/state/…).
+// DefaultPath returns $XDG_STATE_HOME/whaleshell/binary-tofu.json (or ~/.local/state/…).
 func DefaultPath() string {
 	if xdg := os.Getenv("XDG_STATE_HOME"); xdg != "" {
-		return filepath.Join(xdg, "osg", "binary-tofu.json")
+		return filepath.Join(xdg, "whaleshell", "binary-tofu.json")
 	}
 	home, err := os.UserHomeDir()
 	if err != nil {
-		return filepath.Join(os.TempDir(), "osg-binary-tofu.json")
+		return filepath.Join(os.TempDir(), "whaleshell-binary-tofu.json")
 	}
-	return filepath.Join(home, ".local", "state", "osg", "binary-tofu.json")
+	return filepath.Join(home, ".local", "state", "whaleshell", "binary-tofu.json")
 }
 
 // VerifyOrCache hashes path and either records first-seen or denies on mismatch.

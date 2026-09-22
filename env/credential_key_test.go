@@ -3,7 +3,7 @@ package env_test
 import (
 	"testing"
 
-	"github.com/zorneth/osg-core/env"
+	"github.com/whaleshell/whaleshell-core/env"
 )
 
 func TestLooksLikeCredential(t *testing.T) {

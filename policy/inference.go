@@ -81,11 +81,11 @@ var BuiltinProviders = map[string]ProviderPreset{
 		}},
 		EnvKeys: []string{"GROQ_API_KEY"},
 	},
-	// Host-backed models via host.osg.internal (OpenShell: host.openshell.internal).
+	// Host-backed models via host.whaleshell.internal (OpenShell: host.openshell.internal).
 	"local": {
 		ID: "local",
 		Rules: []AllowRule{
-			{ID: "inference.local", Host: "host.osg.internal", Ports: []int{11434, 1234, 8000, 8080}},
+			{ID: "inference.local", Host: "host.whaleshell.internal", Ports: []int{11434, 1234, 8000, 8080}},
 		},
 		EnvKeys: nil,
 	},

@@ -10,9 +10,9 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/zorneth/osg-core/hostpattern"
-	"github.com/zorneth/osg-core/policy"
-	"github.com/zorneth/osg-core/tofu"
+	"github.com/whaleshell/whaleshell-core/hostpattern"
+	"github.com/whaleshell/whaleshell-core/policy"
+	"github.com/whaleshell/whaleshell-core/tofu"
 )
 
 // Decision is admit / deny for one request.
@@ -216,7 +216,7 @@ func (a *Allowlist) gateBinary(binary string) error {
 		return nil
 	}
 	if strings.TrimSpace(binary) == "" {
-		if len(a.topBins) > 0 && os.Getenv("OSG_REQUIRE_BINARY") == "1" {
+		if len(a.topBins) > 0 && os.Getenv("WHALESHELL_REQUIRE_BINARY") == "1" {
 			return fmt.Errorf("binary required by policy.binaries")
 		}
 		return nil
@@ -247,7 +247,7 @@ func (a *Allowlist) matchL4(req EgressRequest) (compiledEndpoint, bool) {
 		}
 		if len(ep.binaries) > 0 && req.Binary != "" {
 			// When peer binary is unknown (Docker Desktop / no SO_PEERCRED), still
-			// match on host:port — same fail-open as gateBinary without OSG_REQUIRE_BINARY.
+			// match on host:port — same fail-open as gateBinary without WHALESHELL_REQUIRE_BINARY.
 			// Known binaries that are not on the list are skipped.
 			if !binaryAllowed(ep.binaries, req.Binary) {
 				continue

@@ -1,4 +1,4 @@
-// Package defaults holds shared ports, guest paths, and image names used across osg modules.
+// Package defaults holds shared ports, guest paths, and image names used across whaleshell modules.
 package defaults
 
 import (
@@ -16,7 +16,7 @@ const (
 	HTTPPort     = 80
 )
 
-// GatewayListen is the default osg-gateway bind address.
+// GatewayListen is the default whaleshell-gateway bind address.
 const GatewayListen = "127.0.0.1:7443"
 
 // ProxyListenHost is used when binding the sidecar on all interfaces inside the netns.
@@ -24,21 +24,21 @@ const ProxyListenHost = "0.0.0.0"
 
 // Guest filesystem layout inside sandboxes.
 const (
-	GuestRoot   = "/osg"
-	GuestData   = "/osg/data"
-	GuestHome   = "/osg/data/home"
-	GuestBin    = "/osg/data/bin"
-	GuestCADir  = "/osg/ca"
-	GuestCAFile = "/osg/ca/ca.pem"
-	GuestPolicy = "/osg/policy.yaml"
-	GuestInit   = "/osg/osg-init"
-	GuestPath   = "/osg/data/home/.local/bin:/osg/data/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+	GuestRoot   = "/whaleshell"
+	GuestData   = "/whaleshell/data"
+	GuestHome   = "/whaleshell/data/home"
+	GuestBin    = "/whaleshell/data/bin"
+	GuestCADir  = "/whaleshell/ca"
+	GuestCAFile = "/whaleshell/ca/ca.pem"
+	GuestPolicy = "/whaleshell/policy.yaml"
+	GuestInit   = "/whaleshell/whaleshell-init"
+	GuestPath   = "/whaleshell/data/home/.local/bin:/whaleshell/data/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 	// GuestEtcOSG is the reserved control tree for agent guidance (skills, payload).
-	// Same role as OpenShell's /etc/openshell; osg naming, MIT-owned content.
-	GuestEtcOSG       = "/etc/osg"
-	GuestSkills       = "/etc/osg/skills"
-	GuestAgentPayload = "/etc/osg/agent-payload"
+	// Same role as OpenShell's /etc/openshell; whaleshell naming, MIT-owned content.
+	GuestEtcOSG       = "/etc/whaleshell"
+	GuestSkills       = "/etc/whaleshell/skills"
+	GuestAgentPayload = "/etc/whaleshell/agent-payload"
 
 	// GuestSandboxHome mirrors OpenShell harness HOME (/sandbox/home).
 	// Symlinked to GuestHome on agent-config install so persist volume stays canonical.
@@ -52,17 +52,17 @@ const NoProxyValue = "localhost,127.0.0.1,::1"
 // Sandbox image tags (local dev) and GHCR catalog (OpenShell-style paths).
 const (
 	ImageDebian = "debian:bookworm"
-	ImageLocal  = "osg-sandbox:local"
-	ImageGUI    = "osg-sandbox:gui"
-	ImageGPU    = "osg-sandbox:gpu"
-	ImageCursor = "osg-sandbox:cursor"
-	ImageClaude = "osg-sandbox:claude"
-	ImageCodex  = "osg-sandbox:codex"
+	ImageLocal  = "whaleshell-sandbox:local"
+	ImageGUI    = "whaleshell-sandbox:gui"
+	ImageGPU    = "whaleshell-sandbox:gpu"
+	ImageCursor = "whaleshell-sandbox:cursor"
+	ImageClaude = "whaleshell-sandbox:claude"
+	ImageCodex  = "whaleshell-sandbox:codex"
 
 	// GHCR: separate image per flavor (like openshell-community/sandboxes/<name>).
-	GHCROrg        = "ghcr.io/zorneth"
-	GHCRGateway    = GHCROrg + "/osg/gateway"
-	GHCRSandboxes  = GHCROrg + "/osg/sandboxes"
+	GHCROrg        = "ghcr.io/whaleshell"
+	GHCRGateway    = GHCROrg + "/whaleshell/gateway"
+	GHCRSandboxes  = GHCROrg + "/whaleshell/sandboxes"
 	ImageBaseRef   = GHCRSandboxes + "/base:latest"
 	ImageGUIRef    = GHCRSandboxes + "/gui:latest"
 	ImageGPURef    = GHCRSandboxes + "/gpu:latest"
@@ -71,18 +71,18 @@ const (
 	ImageCodexRef  = GHCRSandboxes + "/codex:latest"
 )
 
-// Guest SSH layout (osg-sshd).
+// Guest SSH layout (whaleshell-sshd).
 const (
-	GuestSSHDir            = "/osg/ssh"
-	GuestSSHAuthorizedKeys = "/osg/ssh/authorized_keys"
-	GuestSSHHostKey        = "/osg/ssh/host_ed25519"
+	GuestSSHDir            = "/whaleshell/ssh"
+	GuestSSHAuthorizedKeys = "/whaleshell/ssh/authorized_keys"
+	GuestSSHHostKey        = "/whaleshell/ssh/host_ed25519"
 )
 
 // HeaderBinary is an optional HTTP header naming the egress client binary (tests / ops).
-const HeaderBinary = "X-OSG-Binary"
+const HeaderBinary = "X-WHALESHELL-Binary"
 
 // EnvTrustBinaryHeader enables trusting HeaderBinary when set to 1/true/yes.
-const EnvTrustBinaryHeader = "OSG_TRUST_BINARY_HEADER"
+const EnvTrustBinaryHeader = "WHALESHELL_TRUST_BINARY_HEADER"
 
 // RelayClientTimeout is the CLI/SDK wait for a gateway relay exec round-trip.
 const RelayClientTimeout = 70 * time.Second
