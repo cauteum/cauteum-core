@@ -10,9 +10,9 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/whaleshell/whaleshell-core/hostpattern"
+	"github.com/whaleshell/whaleshell-core/internal/hostpattern"
+	"github.com/whaleshell/whaleshell-core/internal/tofu"
 	"github.com/whaleshell/whaleshell-core/policy"
-	"github.com/whaleshell/whaleshell-core/tofu"
 )
 
 // Decision is admit / deny for one request.

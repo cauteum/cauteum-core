@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/whaleshell/whaleshell-core/tofu"
+	"github.com/whaleshell/whaleshell-core/internal/tofu"
 )
 
 func TestTOFUFirstThenMismatch(t *testing.T) {

@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"github.com/whaleshell/whaleshell-core/engine"
+	"github.com/whaleshell/whaleshell-core/internal/tofu"
 	"github.com/whaleshell/whaleshell-core/policy"
-	"github.com/whaleshell/whaleshell-core/tofu"
 )
 
 func TestRegoDenyHost(t *testing.T) {
