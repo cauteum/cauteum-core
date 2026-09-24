@@ -52,12 +52,17 @@ const NoProxyValue = "localhost,127.0.0.1,::1"
 // Sandbox image tags (local dev) and GHCR catalog (OpenShell-style paths).
 const (
 	ImageDebian = "debian:bookworm"
+	// ImageProxy is the slim base for egress sidecars (not the agent/sandbox image).
+	ImageProxy  = "debian:bookworm-slim"
 	ImageLocal  = "whaleshell-sandbox:local"
 	ImageGUI    = "whaleshell-sandbox:gui"
 	ImageGPU    = "whaleshell-sandbox:gpu"
 	ImageCursor = "whaleshell-sandbox:cursor"
 	ImageClaude = "whaleshell-sandbox:claude"
 	ImageCodex  = "whaleshell-sandbox:codex"
+
+	// SandboxPidsLimit is the OpenShell-aligned default PIDs cgroup limit when unset.
+	SandboxPidsLimit int64 = 2048
 
 	// GHCR: separate image per flavor (like openshell-community/sandboxes/<name>).
 	GHCROrg        = "ghcr.io/whaleshell"
