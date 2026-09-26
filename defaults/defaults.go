@@ -3,17 +3,17 @@ package defaults
 
 import (
 	"fmt"
+	"strings"
 	"time"
 )
 
 // Well-known TCP ports.
 const (
-	ProxyPort    = 3128
-	GatewayPort  = 7443
-	NoVNCPort    = 6080
-	GuestSSHPort = 2222
-	HTTPSPort    = 443
-	HTTPPort     = 80
+	ProxyPort   = 3128
+	GatewayPort = 7443
+	NoVNCPort   = 6080
+	HTTPSPort   = 443
+	HTTPPort    = 80
 )
 
 // GatewayListen is the default whaleshell-gateway bind address.
@@ -76,11 +76,42 @@ const (
 	ImageCodexRef  = GHCRSandboxes + "/codex:latest"
 )
 
-// Guest SSH layout (whaleshell-sshd).
+// EnvImagePull controls pulling published images for missing local
+// whaleshell-sandbox:* tags: "never" disables it (offline / local builds only).
+const EnvImagePull = "WHALESHELL_IMAGE_PULL"
+
+// PublishedImage maps a local whaleshell-sandbox:<flavor> tag to the GHCR image
+// CI publishes for it, so installs work without building images locally.
+func PublishedImage(local string) (string, bool) {
+	flavor, ok := strings.CutPrefix(strings.ToLower(strings.TrimSpace(local)), "whaleshell-sandbox:")
+	if !ok {
+		return "", false
+	}
+	switch flavor {
+	case "local", "base":
+		return ImageBaseRef, true
+	case "gui":
+		return ImageGUIRef, true
+	case "gpu":
+		return ImageGPURef, true
+	case "cursor":
+		return ImageCursorRef, true
+	case "claude":
+		return ImageClaudeRef, true
+	case "codex":
+		return ImageCodexRef, true
+	}
+	return "", false
+}
+
+// Guest SSH layout (whaleshell-sshd). The socket directory is a volume shared
+// with the proxy sidecar (supervisor relay); sshd never listens on TCP.
 const (
-	GuestSSHDir            = "/whaleshell/ssh"
-	GuestSSHAuthorizedKeys = "/whaleshell/ssh/authorized_keys"
-	GuestSSHHostKey        = "/whaleshell/ssh/host_ed25519"
+	GuestSSHD      = "/whaleshell/whaleshell-sshd"
+	GuestSSHDir    = "/whaleshell/ssh"
+	GuestSSHSocket = "/whaleshell/ssh/sshd.sock"
+	GuestSSHLog    = "/whaleshell/ssh/sshd.log"
+	GuestWorkspace = "/workspace"
 )
 
 // HeaderBinary is an optional HTTP header naming the egress client binary (tests / ops).
