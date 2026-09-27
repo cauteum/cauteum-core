@@ -1,9 +1,9 @@
 package tofu_test
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
-	"strings"
 	"sync"
 	"testing"
 
@@ -71,7 +71,22 @@ func TestTOFUCanonicalPathAndConcurrentStores(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(string(raw), bin) || strings.Contains(string(raw), alias) {
-		t.Fatalf("TOFU did not use canonical path: %s", raw)
+	var data map[string]string
+	if err := json.Unmarshal(raw, &data); err != nil {
+		t.Fatal(err)
+	}
+	abs, err := filepath.Abs(bin)
+	if err != nil {
+		t.Fatal(err)
+	}
+	canon, err := filepath.EvalSymlinks(abs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, ok := data[canon]; !ok {
+		t.Fatalf("TOFU did not use canonical path %q: %v", canon, data)
+	}
+	if _, ok := data[alias]; ok {
+		t.Fatalf("TOFU stored symlink alias path: %v", data)
 	}
 }
