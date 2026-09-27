@@ -27,8 +27,41 @@ func TestBinaryScopedRule(t *testing.T) {
 		t.Fatal("wget should deny")
 	}
 	d, _ = eng.Decide(context.Background(), engine.EgressRequest{Host: "example.com", Port: 443})
-	if !d.Allow {
-		t.Fatalf("empty binary should match host:port when peercred unknown: %s", d.Reason)
+	if d.Allow || d.Reason != "binary_unknown" {
+		t.Fatalf("empty binary must deny scoped rule: %+v", d)
+	}
+	d, _ = eng.DecideHTTP(context.Background(), engine.HTTPRequest{Host: "example.com", Port: 443, Method: "GET", Path: "/"})
+	if d.Allow || d.Reason != "binary_unknown" {
+		t.Fatalf("empty binary must deny scoped HTTP rule: %+v", d)
+	}
+}
+
+func TestTopLevelBinaryUnknownFailsClosed(t *testing.T) {
+	doc := policy.Document{Version: 1, Binaries: []string{"/usr/bin/curl"}}
+	doc.SetNetworkAllows([]policy.AllowRule{{ID: "api", Host: "example.com", Port: 443}})
+	eng := &engine.Allowlist{}
+	if err := eng.Apply(doc); err != nil {
+		t.Fatal(err)
+	}
+	d, _ := eng.Decide(context.Background(), engine.EgressRequest{Host: "example.com", Port: 443})
+	if d.Allow || d.Reason != "binary_unknown: required by policy.binaries" {
+		t.Fatalf("top-level binary restriction must deny unknown caller: %+v", d)
+	}
+}
+
+func TestUnscopedRuleStillMatchesUnknownBinary(t *testing.T) {
+	doc := policy.Document{Version: 1}
+	doc.SetNetworkAllows([]policy.AllowRule{
+		{ID: "scoped", Host: "example.com", Port: 443, Binaries: []string{"/usr/bin/curl"}},
+		{ID: "public", Host: "example.com", Port: 443},
+	})
+	eng := &engine.Allowlist{}
+	if err := eng.Apply(doc); err != nil {
+		t.Fatal(err)
+	}
+	d, _ := eng.Decide(context.Background(), engine.EgressRequest{Host: "example.com", Port: 443})
+	if !d.Allow || d.Matched == nil || d.Matched.ID != "public" {
+		t.Fatalf("unscoped rule should match unknown caller: %+v", d)
 	}
 }
 

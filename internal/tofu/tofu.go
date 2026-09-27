@@ -22,23 +22,19 @@ type Store struct {
 // Open loads or creates a TOFU store at path (JSON).
 func Open(path string) (*Store, error) {
 	s := &Store{path: path, data: map[string]string{}}
-	b, err := os.ReadFile(path)
-	if err == nil {
-		if err := json.Unmarshal(b, &s.data); err != nil {
-			return nil, fmt.Errorf("tofu: parse: %w", err)
-		}
-		if s.data == nil {
-			s.data = map[string]string{}
-		}
-		return s, nil
-	}
-	if !os.IsNotExist(err) {
-		return nil, err
-	}
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		return nil, err
 	}
-	return s, s.flushLocked()
+	if err := s.withFileLock(func() error {
+		if err := s.loadLocked(); os.IsNotExist(err) {
+			return s.flushLocked()
+		} else {
+			return err
+		}
+	}); err != nil {
+		return nil, err
+	}
+	return s, nil
 }
 
 // DefaultPath returns $XDG_STATE_HOME/whaleshell/binary-tofu.json (or ~/.local/state/…).
@@ -62,20 +58,59 @@ func (s *Store) VerifyOrCache(binPath string) (hash string, err error) {
 	if err != nil {
 		return "", err
 	}
+	abs, err = filepath.EvalSymlinks(abs)
+	if err != nil {
+		return "", err
+	}
 	sum, err := hashFile(abs)
 	if err != nil {
 		return "", err
 	}
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	if prev, ok := s.data[abs]; ok {
-		if prev != sum {
-			return sum, fmt.Errorf("tofu: binary fingerprint changed for %s", abs)
+	err = s.withFileLock(func() error {
+		if err := s.loadLocked(); err != nil {
+			return err
 		}
-		return sum, nil
+		if prev, ok := s.data[abs]; ok {
+			if prev != sum {
+				return fmt.Errorf("tofu: binary fingerprint changed for %s", abs)
+			}
+			return nil
+		}
+		s.data[abs] = sum
+		return s.flushLocked()
+	})
+	return sum, err
+}
+
+func (s *Store) loadLocked() error {
+	b, err := os.ReadFile(s.path)
+	if err != nil {
+		return err
 	}
-	s.data[abs] = sum
-	return sum, s.flushLocked()
+	var data map[string]string
+	if err := json.Unmarshal(b, &data); err != nil {
+		return fmt.Errorf("tofu: parse: %w", err)
+	}
+	if data == nil {
+		data = map[string]string{}
+	}
+	s.data = data
+	return nil
+}
+
+func (s *Store) withFileLock(fn func() error) error {
+	lock, err := os.OpenFile(s.path+".lock", os.O_CREATE|os.O_RDWR, 0o600)
+	if err != nil {
+		return err
+	}
+	defer lock.Close()
+	if err := lockFile(lock); err != nil {
+		return err
+	}
+	defer unlockFile(lock)
+	return fn()
 }
 
 func (s *Store) flushLocked() error {
@@ -83,11 +118,31 @@ func (s *Store) flushLocked() error {
 	if err != nil {
 		return err
 	}
-	tmp := s.path + ".tmp"
-	if err := os.WriteFile(tmp, b, 0o600); err != nil {
+	f, err := os.CreateTemp(filepath.Dir(s.path), ".tofu-*.tmp")
+	if err != nil {
 		return err
 	}
-	return os.Rename(tmp, s.path)
+	tmp := f.Name()
+	defer os.Remove(tmp)
+	if err := f.Chmod(0o600); err != nil {
+		f.Close()
+		return err
+	}
+	if _, err := f.Write(b); err != nil {
+		f.Close()
+		return err
+	}
+	if err := f.Sync(); err != nil {
+		f.Close()
+		return err
+	}
+	if err := f.Close(); err != nil {
+		return err
+	}
+	if err := os.Rename(tmp, s.path); err != nil {
+		return err
+	}
+	return syncDirectory(filepath.Dir(s.path))
 }
 
 func hashFile(path string) (string, error) {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 
 	"github.com/whaleshell/whaleshell-core/engine"
@@ -37,6 +38,9 @@ func TestRegoDenyHost(t *testing.T) {
 }
 
 func TestBinaryTOFU(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("policy.binaries require Unix-absolute paths (path.IsAbs)")
+	}
 	dir := t.TempDir()
 	bin := filepath.Join(dir, "curl")
 	_ = os.WriteFile(bin, []byte("bin"), 0o755)

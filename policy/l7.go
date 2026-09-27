@@ -203,43 +203,40 @@ func matchPathGlob(pattern, req string) bool {
 	if pattern == req {
 		return true
 	}
-	if ok, err := path.Match(pattern, req); err == nil && ok {
-		return true
+	if !strings.Contains(pattern, "**") {
+		ok, err := path.Match(pattern, req)
+		return err == nil && ok
 	}
-	// ** support: split on /**/
-	if strings.Contains(pattern, "**") {
-		parts := strings.Split(pattern, "**")
-		if len(parts) == 1 {
-			return false
+	// Memoized matching keeps repeated ** bounded by len(pattern)*len(req).
+	type position struct{ pat, value int }
+	seen := map[position]bool{}
+	memo := map[position]bool{}
+	var match func(int, int) bool
+	match = func(i, j int) bool {
+		pos := position{i, j}
+		if seen[pos] {
+			return memo[pos]
 		}
-		// prefix ** suffix (possibly multiple **)
-		cur := req
-		for i, part := range parts {
-			if part == "" {
-				if i == len(parts)-1 {
-					return true
-				}
-				continue
-			}
-			if i == 0 {
-				if !strings.HasPrefix(cur, part) {
-					return false
-				}
-				cur = cur[len(part):]
-				continue
-			}
-			idx := strings.Index(cur, part)
-			if idx < 0 {
-				return false
-			}
-			cur = cur[idx+len(part):]
-			if i == len(parts)-1 {
-				return cur == "" || part == "" || strings.HasPrefix(part, "/")
-			}
+		seen[pos] = true
+		if i == len(pattern) {
+			memo[pos] = j == len(req)
+			return memo[pos]
 		}
-		return cur == ""
+		switch pattern[i] {
+		case '*':
+			if i+1 < len(pattern) && pattern[i+1] == '*' {
+				memo[pos] = match(i+2, j) || (j < len(req) && match(i, j+1))
+			} else {
+				memo[pos] = match(i+1, j) || (j < len(req) && req[j] != '/' && match(i, j+1))
+			}
+		case '?':
+			memo[pos] = j < len(req) && req[j] != '/' && match(i+1, j+1)
+		default:
+			memo[pos] = j < len(req) && pattern[i] == req[j] && match(i+1, j+1)
+		}
+		return memo[pos]
 	}
-	return false
+	return match(0, 0)
 }
 
 // MatchHTTP reports whether method+path is allowed under this rule's L7 policy.

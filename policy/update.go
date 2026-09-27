@@ -2,6 +2,7 @@ package policy
 
 import (
 	"fmt"
+	"net/netip"
 	"strconv"
 	"strings"
 )
@@ -25,13 +26,29 @@ func ParseEndpointSpec(spec string) (EndpointSpec, error) {
 	if spec == "" {
 		return EndpointSpec{}, fmt.Errorf("policy: empty endpoint spec")
 	}
-	parts := strings.Split(spec, ":")
+	var parts []string
+	if strings.HasPrefix(spec, "[") {
+		end := strings.Index(spec, "]:")
+		if end < 0 {
+			return EndpointSpec{}, fmt.Errorf("policy: IPv6 endpoint needs [host]:port (got %q)", spec)
+		}
+		host := spec[1:end]
+		if addr, err := netip.ParseAddr(host); err != nil || !addr.Is6() {
+			return EndpointSpec{}, fmt.Errorf("policy: invalid IPv6 host in %q", spec)
+		}
+		parts = append([]string{host}, strings.Split(spec[end+2:], ":")...)
+	} else {
+		parts = strings.Split(spec, ":")
+	}
 	if len(parts) < 2 {
 		return EndpointSpec{}, fmt.Errorf("policy: endpoint spec needs host:port (got %q)", spec)
 	}
 	host := strings.TrimSpace(parts[0])
 	if host == "" {
 		return EndpointSpec{}, fmt.Errorf("policy: empty host in %q", spec)
+	}
+	if len(parts) > 5 {
+		return EndpointSpec{}, fmt.Errorf("policy: too many endpoint fields in %q", spec)
 	}
 	port, err := strconv.Atoi(strings.TrimSpace(parts[1]))
 	if err != nil || port <= 0 || port > 65535 {
