@@ -202,8 +202,8 @@ func (d Document) Validate() error {
 			}
 		}
 		for j, bin := range rule.Binaries {
-			if strings.TrimSpace(bin.Path) == "" {
-				return fmt.Errorf("policy: network_policies[%q].binaries[%d]: path required", key, j)
+			if !path.IsAbs(bin.Path) || hasDotSegment(bin.Path) {
+				return fmt.Errorf("policy: network_policies[%q].binaries[%d]: absolute path without dot segments required", key, j)
 			}
 		}
 	}
@@ -233,8 +233,8 @@ func (d Document) Validate() error {
 		if b == "" {
 			return fmt.Errorf("policy: binaries[%d]: empty", i)
 		}
-		if strings.Contains(b, "..") {
-			return fmt.Errorf("policy: binaries[%d]: must not contain '..'", i)
+		if !path.IsAbs(b) || hasDotSegment(b) {
+			return fmt.Errorf("policy: binaries[%d]: must be absolute without dot segments", i)
 		}
 	}
 	if p := strings.TrimSpace(d.RegoPath); p != "" && strings.Contains(p, "\x00") {
@@ -522,10 +522,19 @@ func validateFSPath(p string) error {
 	if !path.IsAbs(p) {
 		return fmt.Errorf("policy: filesystem path must be absolute: %q", p)
 	}
-	if strings.Contains(p, "..") {
-		return fmt.Errorf("policy: filesystem path must not contain '..': %q", p)
+	if hasDotSegment(p) {
+		return fmt.Errorf("policy: filesystem path must not contain dot segments: %q", p)
 	}
 	return nil
+}
+
+func hasDotSegment(p string) bool {
+	for _, segment := range strings.Split(p, "/") {
+		if segment == "." || segment == ".." {
+			return true
+		}
+	}
+	return false
 }
 
 func validateProcessIdentity(field, value string) error {

@@ -3,13 +3,15 @@ package engine
 import (
 	"bufio"
 	"context"
+	"fmt"
 	"os"
 	"path"
+	"regexp"
 	"strings"
 )
 
-// RegoGate is an optional post-allow deny hook.
-// Supports lightweight whaleshell-rego lines and a subset of Rego equality checks:
+// DenyListGate is an optional post-allow deny hook. It is not a Rego interpreter.
+// It accepts only these single-line rules:
 //
 //	# whaleshell-rego
 //	deny host evil.example.com
@@ -19,11 +21,16 @@ import (
 //	allow = false { input.host == "evil.example.com" }
 //
 // Missing/empty path = no-op (Go policy only).
-type RegoGate struct {
+type DenyListGate struct {
 	denyHosts   []string
 	denyMethods []string
 	denyPaths   []string
 }
+
+// RegoGate preserves the existing API name for callers.
+type RegoGate = DenyListGate
+
+var legacyDeny = regexp.MustCompile(`^allow\s*=\s*false\s*\{\s*input\.(host|method|path)\s*==\s*"([^"]+)"\s*\}$`)
 
 // LoadRegoFile loads an optional deny-list Rego/whaleshell-rego file.
 func LoadRegoFile(pathName string) (*RegoGate, error) {
@@ -36,42 +43,41 @@ func LoadRegoFile(pathName string) (*RegoGate, error) {
 		return nil, err
 	}
 	defer f.Close()
-	g := &RegoGate{}
+	g := &DenyListGate{}
 	sc := bufio.NewScanner(f)
+	lineNumber := 0
 	for sc.Scan() {
+		lineNumber++
 		line := strings.TrimSpace(sc.Text())
 		if line == "" || strings.HasPrefix(line, "#") || strings.HasPrefix(line, "//") {
 			continue
 		}
-		if strings.HasPrefix(line, "package ") || strings.HasPrefix(line, "default ") || strings.HasPrefix(line, "import ") {
-			continue
-		}
 		fields := strings.Fields(line)
-		if len(fields) >= 3 && strings.EqualFold(fields[0], "deny") {
+		if len(fields) == 3 && fields[0] == "deny" && fields[2] != "" {
 			switch strings.ToLower(fields[1]) {
 			case "host":
 				g.denyHosts = append(g.denyHosts, fields[2])
+				continue
 			case "method":
 				g.denyMethods = append(g.denyMethods, strings.ToUpper(fields[2]))
+				continue
 			case "path":
 				g.denyPaths = append(g.denyPaths, fields[2])
+				continue
 			}
 		}
-		if strings.Contains(line, "input.host") && strings.Contains(line, "==") {
-			if q := extractQuoted(line); q != "" {
-				g.denyHosts = append(g.denyHosts, q)
+		if matches := legacyDeny.FindStringSubmatch(line); matches != nil {
+			switch matches[1] {
+			case "host":
+				g.denyHosts = append(g.denyHosts, matches[2])
+			case "method":
+				g.denyMethods = append(g.denyMethods, strings.ToUpper(matches[2]))
+			case "path":
+				g.denyPaths = append(g.denyPaths, matches[2])
 			}
+			continue
 		}
-		if strings.Contains(line, "input.method") && strings.Contains(line, "==") {
-			if q := extractQuoted(line); q != "" {
-				g.denyMethods = append(g.denyMethods, strings.ToUpper(q))
-			}
-		}
-		if strings.Contains(line, "input.path") && strings.Contains(line, "==") {
-			if q := extractQuoted(line); q != "" {
-				g.denyPaths = append(g.denyPaths, q)
-			}
-		}
+		return nil, fmt.Errorf("%s:%d: unsupported deny-gate expression %q; use `deny host|method|path VALUE`", pathName, lineNumber, line)
 	}
 	if err := sc.Err(); err != nil {
 		return nil, err
@@ -79,23 +85,8 @@ func LoadRegoFile(pathName string) (*RegoGate, error) {
 	return g, nil
 }
 
-func extractQuoted(s string) string {
-	for _, quote := range []byte{'"', '\''} {
-		i := strings.IndexByte(s, quote)
-		if i < 0 {
-			continue
-		}
-		j := strings.IndexByte(s[i+1:], quote)
-		if j < 0 {
-			continue
-		}
-		return s[i+1 : i+1+j]
-	}
-	return ""
-}
-
 // Allow reports whether the request passes the Rego gate (true = keep Go allow).
-func (g *RegoGate) Allow(_ context.Context, host, method, pathName, _ string) (bool, string) {
+func (g *DenyListGate) Allow(_ context.Context, host, method, pathName, _ string) (bool, string) {
 	if g == nil {
 		return true, ""
 	}

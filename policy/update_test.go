@@ -19,6 +19,18 @@ func TestParseEndpointSpec(t *testing.T) {
 	}
 }
 
+func TestParseEndpointSpecIPv6(t *testing.T) {
+	ep, err := policy.ParseEndpointSpec("[2001:db8::1]:443:read-only:rest:enforce")
+	if err != nil || ep.Host != "2001:db8::1" || ep.Port != 443 || ep.Access != "read-only" {
+		t.Fatalf("IPv6 endpoint: %+v, %v", ep, err)
+	}
+	for _, invalid := range []string{"[2001:db8::1:443", "[not-ipv6]:443", "example.com:443:read-only:rest:enforce:extra"} {
+		if _, err := policy.ParseEndpointSpec(invalid); err == nil {
+			t.Fatalf("accepted invalid endpoint %q", invalid)
+		}
+	}
+}
+
 func TestApplyNetworkUpdateMerge(t *testing.T) {
 	base := policy.Document{Version: 1}
 	base.SetNetworkAllows([]policy.AllowRule{

@@ -4,7 +4,6 @@ package engine
 import (
 	"context"
 	"fmt"
-	"os"
 	"path"
 	"strconv"
 	"strings"
@@ -142,8 +141,11 @@ func (a *Allowlist) Decide(ctx context.Context, req EgressRequest) (Decision, er
 	if err := a.gateBinary(req.Binary); err != nil {
 		return Decision{Allow: false, Reason: err.Error()}, nil
 	}
-	ep, ok := a.matchL4(req)
+	ep, ok, binaryUnknown := a.matchL4(req)
 	if !ok {
+		if binaryUnknown {
+			return Decision{Allow: false, Reason: "binary_unknown"}, nil
+		}
 		return Decision{Allow: false, Reason: "default deny (no matching network_policies)"}, nil
 	}
 	dec := Decision{
@@ -170,8 +172,11 @@ func (a *Allowlist) DecideHTTP(ctx context.Context, req HTTPRequest) (Decision, 
 	if err := a.gateBinary(req.Binary); err != nil {
 		return Decision{Allow: false, Reason: err.Error()}, nil
 	}
-	ep, ok := a.matchL4(EgressRequest{Host: req.Host, Port: req.Port, Binary: req.Binary})
+	ep, ok, binaryUnknown := a.matchL4(EgressRequest{Host: req.Host, Port: req.Port, Binary: req.Binary})
 	if !ok {
+		if binaryUnknown {
+			return Decision{Allow: false, Reason: "binary_unknown"}, nil
+		}
 		return Decision{Allow: false, Reason: "default deny (no matching network_policies)"}, nil
 	}
 	matched := &MatchedRule{
@@ -216,8 +221,8 @@ func (a *Allowlist) gateBinary(binary string) error {
 		return nil
 	}
 	if strings.TrimSpace(binary) == "" {
-		if len(a.topBins) > 0 && os.Getenv("WHALESHELL_REQUIRE_BINARY") == "1" {
-			return fmt.Errorf("binary required by policy.binaries")
+		if len(a.topBins) > 0 {
+			return fmt.Errorf("binary_unknown: required by policy.binaries")
 		}
 		return nil
 	}
@@ -232,8 +237,9 @@ func (a *Allowlist) gateBinary(binary string) error {
 	return nil
 }
 
-func (a *Allowlist) matchL4(req EgressRequest) (compiledEndpoint, bool) {
+func (a *Allowlist) matchL4(req EgressRequest) (compiledEndpoint, bool, bool) {
 	var matches []compiledEndpoint
+	binaryUnknown := false
 	for _, ep := range a.endpoints {
 		if ep.hasHost {
 			if !ep.pattern.Match(req.Host) {
@@ -245,10 +251,11 @@ func (a *Allowlist) matchL4(req EgressRequest) (compiledEndpoint, bool) {
 		if _, ok := ep.ports[req.Port]; !ok {
 			continue
 		}
-		if len(ep.binaries) > 0 && req.Binary != "" {
-			// When peer binary is unknown (Docker Desktop / no SO_PEERCRED), still
-			// match on host:port — same fail-open as gateBinary without WHALESHELL_REQUIRE_BINARY.
-			// Known binaries that are not on the list are skipped.
+		if len(ep.binaries) > 0 && strings.TrimSpace(req.Binary) == "" {
+			binaryUnknown = true
+			continue
+		}
+		if len(ep.binaries) > 0 {
 			if !binaryAllowed(ep.binaries, req.Binary) {
 				continue
 			}
@@ -256,7 +263,7 @@ func (a *Allowlist) matchL4(req EgressRequest) (compiledEndpoint, bool) {
 		matches = append(matches, ep)
 	}
 	if len(matches) == 0 {
-		return compiledEndpoint{}, false
+		return compiledEndpoint{}, false, binaryUnknown
 	}
 	// Prefer provider/inference rules that bind credentials (OpenShell endpoint binding)
 	// over bare L4 allow entries when both match the same host:port.
@@ -271,7 +278,7 @@ func (a *Allowlist) matchL4(req EgressRequest) (compiledEndpoint, bool) {
 			best = ep
 		}
 	}
-	return best, true
+	return best, true, false
 }
 
 func displayHost(ep compiledEndpoint) string {
