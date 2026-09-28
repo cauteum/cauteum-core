@@ -82,6 +82,9 @@ type AllowRule struct {
 	Enforcement string `yaml:"enforcement,omitempty" json:"enforcement,omitempty"`
 	// CredentialKeys binds whaleshell:resolve:env:KEY rewrite to this endpoint.
 	CredentialKeys               []string `yaml:"credential_keys,omitempty" json:"credential_keys,omitempty"`
+	CredentialSigning            string   `yaml:"credential_signing,omitempty" json:"credential_signing,omitempty"`
+	SigningService               string   `yaml:"signing_service,omitempty" json:"signing_service,omitempty"`
+	SigningRegion                string   `yaml:"signing_region,omitempty" json:"signing_region,omitempty"`
 	WebsocketCredentialRewrite   bool     `yaml:"websocket_credential_rewrite,omitempty" json:"websocket_credential_rewrite,omitempty"`
 	RequestBodyCredentialRewrite bool     `yaml:"request_body_credential_rewrite,omitempty" json:"request_body_credential_rewrite,omitempty"`
 	AllowEncodedSlash            bool     `yaml:"allow_encoded_slash,omitempty" json:"allow_encoded_slash,omitempty"`
