@@ -1,6 +1,6 @@
 # Roadmap — whaleshell-core
 
-Status: **v0.0.2-alpha.1** (alpha) · Part of [whaleshell/whaleshell](https://github.com/whaleshell)
+Status: **v0.1.0-alpha.2** (alpha) · Part of [whaleshell/whaleshell](https://github.com/whaleshell)
 
 Shared policy schema and egress engine. Product-wide unfinished work lives in the workspace hub `docs/ROADMAP.md` (local multi-repo checkout).
 

@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [v0.1.0-alpha.2] - 2026-09-28
+
+### Added
+
+- Parse and preserve OpenShell credential-signing policy metadata.
+
 ## [v0.0.2-alpha.1] - 2026-09-28
 
 ### Security
