@@ -24,6 +24,17 @@ func TestMergeGlobalPrependsAllows(t *testing.T) {
 	}
 }
 
+func TestMergeGlobalRejectsSandboxCredentialBinding(t *testing.T) {
+	global := policy.Document{Version: 1}
+	global.SetNetworkAllows([]policy.AllowRule{{
+		Host: "api.example.com", Port: 443,
+		CredentialBinding: &policy.CredentialBinding{Provider: "database"},
+	}})
+	if _, err := policy.MergeGlobal(policy.Document{Version: 1}, global); err == nil {
+		t.Fatal("global policy must reject sandbox-scoped credential_binding")
+	}
+}
+
 func TestGraphQLPolicy(t *testing.T) {
 	doc := policy.Document{Version: 1}
 	doc.SetNetworkAllows([]policy.AllowRule{{

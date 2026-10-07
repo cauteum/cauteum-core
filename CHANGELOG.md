@@ -2,6 +2,25 @@
 
 ## [Unreleased]
 
+## [v0.1.0-alpha.2] - 2026-10-07
+
+### Added
+
+- Parse and preserve OpenShell credential-signing policy metadata.
+- Match HTTP query parameters and GraphQL operations, including persisted-query hashes, using OpenShell policy selectors.
+- Validate process, filesystem, and network middleware policy fields when decoding policy documents.
+
+### Changed
+
+- Align host-pattern overlap and selector checks with OpenShell admission semantics.
+- Remove the incomplete `rego_path` evaluator; this release does not claim Rego policy support.
+- Keep documented defaults and relay timeouts in shared constants.
+
+### Fixed
+
+- Reject malformed or unsupported policy fields instead of silently accepting them.
+- Preserve explicit filesystem and process values across YAML and JSON decoding.
+
 ## [v0.0.2-alpha.1] - 2026-09-28
 
 ### Security

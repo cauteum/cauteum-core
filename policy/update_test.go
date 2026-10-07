@@ -70,3 +70,42 @@ func TestApplyNetworkUpdateAddHost(t *testing.T) {
 		t.Fatalf("%+v", allows)
 	}
 }
+
+func TestApplyNetworkUpdateUsesEveryEffectivePortAndHonorsPortsPrecedence(t *testing.T) {
+	const source = `version: 1
+network_policies:
+  upstream-rule:
+    endpoints:
+      - host: api.example.com
+        port: 8443
+        ports: [9443, 10443]
+`
+	base, err := policy.Parse([]byte(source))
+	if err != nil {
+		t.Fatal(err)
+	}
+	out, err := policy.ApplyNetworkUpdate(base, policy.NetworkUpdate{
+		AddAllows: []policy.MethodPathSpec{{Host: "api.example.com", Port: 10443, Method: "POST", Path: "/items"}},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	rules := out.NetworkAllows()
+	if len(rules) != 1 || len(rules[0].Rules) != 1 {
+		t.Fatalf("update for second list port must modify existing endpoint: %+v", rules)
+	}
+	if rules[0].Rules[0].Allow == nil || rules[0].Rules[0].Allow.Method != "POST" {
+		t.Fatalf("L7 rule was not added: %+v", rules[0])
+	}
+
+	out, err = policy.ApplyNetworkUpdate(base, policy.NetworkUpdate{
+		AddEndpoints: []policy.EndpointSpec{{Host: "api.example.com", Port: 8443}},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	rules = out.NetworkAllows()
+	if len(rules) != 2 {
+		t.Fatalf("scalar port shadowed by non-empty ports must not match update: %+v", rules)
+	}
+}

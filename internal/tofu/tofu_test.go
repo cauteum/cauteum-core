@@ -58,13 +58,11 @@ func TestTOFUCanonicalPathAndConcurrentStores(t *testing.T) {
 		store *tofu.Store
 		path  string
 	}{{a, bin}, {b, alias}} {
-		group.Add(1)
-		go func() {
-			defer group.Done()
+		group.Go(func() {
 			if _, err := tc.store.VerifyOrCache(tc.path); err != nil {
 				t.Errorf("verify %s: %v", tc.path, err)
 			}
-		}()
+		})
 	}
 	group.Wait()
 	raw, err := os.ReadFile(path)

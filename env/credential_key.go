@@ -1,5 +1,7 @@
 package env
 
+import "slices"
+
 import "strings"
 
 // credentialSegments are underscore-separated tokens that mark a key as secret-like
@@ -37,10 +39,8 @@ func LooksLikeCredential(key string) bool {
 	for _, seg := range credentialSegments {
 		want := strings.Split(seg, "_")
 		if len(want) == 1 {
-			for _, p := range parts {
-				if p == want[0] {
-					return true
-				}
+			if slices.Contains(parts, want[0]) {
+				return true
 			}
 			continue
 		}

@@ -7,6 +7,7 @@ package hostpattern
 import (
 	"fmt"
 	"path"
+	"slices"
 	"strings"
 	"unicode"
 )
@@ -46,10 +47,8 @@ func Parse(pattern string) (Pattern, error) {
 
 	source := strings.ToLower(pattern)
 	parts := strings.Split(source, ".")
-	for _, p := range parts {
-		if p == "" {
-			return Pattern{}, fmt.Errorf("host pattern must not contain empty DNS labels")
-		}
+	if slices.Contains(parts, "") {
+		return Pattern{}, fmt.Errorf("host pattern must not contain empty DNS labels")
 	}
 
 	labels := make([]labelPattern, 0, len(parts))
@@ -81,11 +80,104 @@ func (p Pattern) Match(host string) bool {
 	return p.matchLabels(labels)
 }
 
-func (p Pattern) matchLabels(host []string) bool {
-	for _, l := range host {
-		if l == "" {
+// Overlaps reports whether two patterns can match at least one same host.
+// It is conservative when both labels contain non-literal globs, matching
+// OpenShell's admission-time overlap check.
+func (p Pattern) Overlaps(other Pattern) bool {
+	type state struct{ left, right int }
+	pending := []state{{}}
+	visited := map[state]struct{}{}
+	for len(pending) > 0 {
+		cur := pending[0]
+		pending = pending[1:]
+		if _, ok := visited[cur]; ok {
+			continue
+		}
+		visited[cur] = struct{}{}
+		if cur.left == len(p.labels) && cur.right == len(other.labels) {
+			return true
+		}
+		if cur.left >= len(p.labels) || cur.right >= len(other.labels) {
+			continue
+		}
+		left, right := p.labels[cur.left], other.labels[cur.right]
+		switch {
+		case left.kind == labelRecursive && right.kind == labelRecursive:
+			pending = append(pending, state{cur.left + 1, cur.right + 1}, state{cur.left, cur.right + 1}, state{cur.left + 1, cur.right})
+		case left.kind == labelRecursive:
+			pending = append(pending, state{cur.left + 1, cur.right + 1}, state{cur.left, cur.right + 1})
+		case right.kind == labelRecursive:
+			pending = append(pending, state{cur.left + 1, cur.right + 1}, state{cur.left + 1, cur.right})
+		case labelsMayOverlap(left, right):
+			pending = append(pending, state{cur.left + 1, cur.right + 1})
+		}
+	}
+	return false
+}
+
+func labelsMayOverlap(left, right labelPattern) bool {
+	switch {
+	case left.literal && right.literal:
+		return left.source == right.source
+	case left.literal:
+		ok, _ := path.Match(right.source, left.source)
+		return ok
+	case right.literal:
+		ok, _ := path.Match(left.source, right.source)
+		return ok
+	default:
+		return true
+	}
+}
+
+// SelectorMayMatchPattern conservatively reports whether the selector can
+// match any host admitted by candidate, including its exclusions.
+func SelectorMayMatchPattern(include, exclude []Pattern, candidate Pattern) bool {
+	for _, included := range include {
+		if !included.Overlaps(candidate) {
+			continue
+		}
+		var concrete string
+		if candidate.literalHost() {
+			concrete = candidate.source
+		} else if included.literalHost() {
+			concrete = included.source
+		}
+		excluded := false
+		if concrete != "" {
+			for _, pattern := range exclude {
+				if pattern.Match(concrete) {
+					excluded = true
+					break
+				}
+			}
+		} else {
+			for _, pattern := range exclude {
+				if len(pattern.labels) == 1 && pattern.labels[0].kind == labelRecursive || pattern.source == included.source || pattern.source == candidate.source {
+					excluded = true
+					break
+				}
+			}
+		}
+		if !excluded {
+			return true
+		}
+	}
+	return false
+}
+
+func (p Pattern) literalHost() bool {
+	for _, label := range p.labels {
+		if label.kind != labelGlob || !label.literal {
 			return false
 		}
+	}
+	return true
+}
+
+func (p Pattern) matchLabels(host []string) bool {
+	if slices.Contains(host, "") {
+		return false
 	}
 	type state struct{ pi, hi int }
 	pending := []state{{0, 0}}

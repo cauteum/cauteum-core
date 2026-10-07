@@ -183,21 +183,16 @@ func ApplyNetworkUpdate(base Document, u NetworkUpdate) (Document, error) {
 func findAllowIndex(rules []AllowRule, host string, port int) int {
 	host = strings.ToLower(strings.TrimSpace(host))
 	for i, r := range rules {
-		if strings.ToLower(strings.TrimSpace(r.Host)) == host && effectivePort(r) == port {
-			return i
+		if strings.ToLower(strings.TrimSpace(r.Host)) != host {
+			continue
+		}
+		for _, effectivePort := range r.EffectivePorts() {
+			if effectivePort == port {
+				return i
+			}
 		}
 	}
 	return -1
-}
-
-func effectivePort(r AllowRule) int {
-	if r.Port > 0 {
-		return r.Port
-	}
-	if len(r.Ports) > 0 {
-		return r.Ports[0]
-	}
-	return 0
 }
 
 func ensureEndpoint(allows []AllowRule, host string, port int, binaries []string) (int, []AllowRule, error) {

@@ -12,31 +12,6 @@ import (
 	"github.com/whaleshell/whaleshell-core/policy"
 )
 
-func TestRegoDenyHost(t *testing.T) {
-	dir := t.TempDir()
-	rego := filepath.Join(dir, "deny.rego")
-	if err := os.WriteFile(rego, []byte("deny host evil.example\n"), 0o644); err != nil {
-		t.Fatal(err)
-	}
-	doc := policy.Document{Version: 1, RegoPath: rego}
-	doc.SetNetworkAllows([]policy.AllowRule{
-		{Host: "evil.example", Port: 443},
-		{Host: "good.example", Port: 443},
-	})
-	var eng engine.Allowlist
-	if err := eng.Apply(doc); err != nil {
-		t.Fatal(err)
-	}
-	d, _ := eng.Decide(context.Background(), engine.EgressRequest{Host: "evil.example", Port: 443})
-	if d.Allow {
-		t.Fatal("expected rego deny")
-	}
-	d, _ = eng.Decide(context.Background(), engine.EgressRequest{Host: "good.example", Port: 443})
-	if !d.Allow {
-		t.Fatal("expected allow")
-	}
-}
-
 func TestBinaryTOFU(t *testing.T) {
 	if runtime.GOOS == "windows" {
 		t.Skip("policy.binaries require Unix-absolute paths (path.IsAbs)")
@@ -63,5 +38,34 @@ func TestBinaryTOFU(t *testing.T) {
 	d, _ = eng.Decide(context.Background(), engine.EgressRequest{Host: "example.com", Port: 443, Binary: bin})
 	if d.Allow {
 		t.Fatal("expected tofu deny")
+	}
+}
+
+func TestPinnedPortListOverridesScalarPortAtRuntime(t *testing.T) {
+	const source = `version: 1
+network_policies:
+  pinned-ports:
+    endpoints:
+      - host: api.example.com
+        port: 8443
+        ports: [9443, 10443]
+`
+	doc, err := policy.Parse([]byte(source))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var allowlist engine.Allowlist
+	if err := allowlist.Apply(doc); err != nil {
+		t.Fatal(err)
+	}
+	for _, port := range []int{9443, 10443} {
+		decision, err := allowlist.Decide(context.Background(), engine.EgressRequest{Host: "api.example.com", Port: port})
+		if err != nil || !decision.Allow {
+			t.Errorf("ports list value %d must be allowed: decision=%+v err=%v", port, decision, err)
+		}
+	}
+	decision, err := allowlist.Decide(context.Background(), engine.EgressRequest{Host: "api.example.com", Port: 8443})
+	if err != nil || decision.Allow {
+		t.Fatalf("non-empty ports must override scalar port: decision=%+v err=%v", decision, err)
 	}
 }

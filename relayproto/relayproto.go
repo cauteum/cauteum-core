@@ -110,9 +110,9 @@ func Dial(ctx context.Context, baseURL, path string, opt DialOptions) (net.Conn,
 	}
 	timeout := opt.Timeout
 	if timeout <= 0 {
-		timeout = 10 * time.Second
+		timeout = defaultDialTimeout
 	}
-	d := net.Dialer{Timeout: timeout, KeepAlive: 30 * time.Second}
+	d := net.Dialer{Timeout: timeout, KeepAlive: tcpKeepaliveInterval}
 	raw, err := d.DialContext(ctx, "tcp", host)
 	if err != nil {
 		return nil, fmt.Errorf("relay dial %s: %w", host, err)
@@ -184,7 +184,7 @@ func IsUpgrade(r *http.Request) bool {
 	if !strings.EqualFold(strings.TrimSpace(r.Header.Get("Upgrade")), UpgradeProtocol) {
 		return false
 	}
-	for _, v := range strings.Split(r.Header.Get("Connection"), ",") {
+	for v := range strings.SplitSeq(r.Header.Get("Connection"), ",") {
 		if strings.EqualFold(strings.TrimSpace(v), "upgrade") {
 			return true
 		}
