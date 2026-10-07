@@ -1,6 +1,14 @@
 # Changelog
 
-## [Unreleased]
+## [v0.1.0-beta.1] - 2026-10-07
+
+### Added
+
+- Return relay pipe failures so callers can report stream errors with operation context.
+
+### Fixed
+
+- Keep Unix-only executable identity tests out of cross-platform engine test builds.
 
 ## [v0.1.0-alpha.2] - 2026-10-07
 
