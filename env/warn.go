@@ -58,7 +58,7 @@ func WarnCredentialEnv(w io.Writer, envMap map[string]string, hints map[string][
 			}
 			fmt.Fprintf(w, "    whaleshell sandbox create --provider my-<name> …\n")
 		}
-		fmt.Fprintf(w, "  See: docs/CREDENTIALS.md (use --no-credential-warnings to silence)\n\n")
+		fmt.Fprintf(w, "  See: https://whaleshell.github.io/guides/credentials/ (use --no-credential-warnings to silence)\n\n")
 	}
 }
 

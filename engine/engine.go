@@ -40,11 +40,13 @@ type EgressRequest struct {
 
 // HTTPRequest is an application-layer request after L4 match.
 type HTTPRequest struct {
-	Host   string
-	Port   int
-	Method string
-	Path   string
-	Binary string
+	Host    string
+	Port    int
+	Method  string
+	Path    string
+	Binary  string
+	GraphQL *policy.GraphQLOperation
+	Query   map[string][]string
 }
 
 // PolicyEngine evaluates egress.
@@ -71,7 +73,6 @@ type Allowlist struct {
 	topBins    []string
 	anyRuleBin bool
 	tofu       *tofu.Store
-	rego       *RegoGate
 }
 
 // SetTOFU installs a trust-on-first-use store for binary fingerprints.
@@ -116,20 +117,11 @@ func (a *Allowlist) Apply(doc policy.Document) error {
 		}
 		compiled = append(compiled, ep)
 	}
-	var gate *RegoGate
-	if doc.RegoPath != "" {
-		g, err := LoadRegoFile(doc.RegoPath)
-		if err != nil {
-			return fmt.Errorf("policy engine: rego_path: %w", err)
-		}
-		gate = g
-	}
 	a.mu.Lock()
 	a.doc = doc
 	a.endpoints = compiled
 	a.topBins = append([]string{}, doc.Binaries...)
 	a.anyRuleBin = anyRuleBin
-	a.rego = gate
 	a.mu.Unlock()
 	return nil
 }
@@ -159,8 +151,9 @@ func (a *Allowlist) Decide(ctx context.Context, req EgressRequest) (Decision, er
 			Rule:       ep.rule,
 		},
 	}
-	if ok, reason := a.rego.Allow(ctx, req.Host, "", "", req.Binary); !ok {
-		return Decision{Allow: false, Reason: reason, Matched: dec.Matched}, nil
+	if strings.EqualFold(strings.TrimSpace(ep.rule.Protocol), policy.ProtocolSQL) {
+		dec.Audit = true
+		dec.Reason += " SQL command inspection is unavailable; forwarding in audit mode"
 	}
 	return dec, nil
 }
@@ -186,19 +179,14 @@ func (a *Allowlist) DecideHTTP(ctx context.Context, req HTTPRequest) (Decision, 
 		AllowedIPs: append([]string{}, ep.rule.AllowedIPs...),
 		Rule:       ep.rule,
 	}
-	allow, reason := ep.rule.MatchHTTP(req.Method, req.Path)
-	if !allow {
-		if ep.rule.IsAudit() {
-			return Decision{
-				Allow:   true,
-				Audit:   true,
-				Reason:  "audit: " + reason,
-				Matched: matched,
-			}, nil
-		}
-		return Decision{Allow: false, Reason: reason, Matched: matched}, nil
+	var allow bool
+	var reason string
+	if req.GraphQL != nil {
+		allow, reason = ep.rule.MatchGraphQLQuery(*req.GraphQL, req.Path, req.Query)
+	} else {
+		allow, reason = ep.rule.MatchHTTPQuery(req.Method, req.Path, req.Query)
 	}
-	if ok, reason := a.rego.Allow(ctx, req.Host, req.Method, req.Path, req.Binary); !ok {
+	if !allow {
 		if ep.rule.IsAudit() {
 			return Decision{
 				Allow:   true,
@@ -307,8 +295,8 @@ func matchBinaryGlob(pattern, binary string) bool {
 	if ok, err := path.Match(pattern, binary); err == nil && ok {
 		return true
 	}
-	if strings.HasSuffix(pattern, "/**") {
-		prefix := strings.TrimSuffix(pattern, "/**")
+	if before, ok := strings.CutSuffix(pattern, "/**"); ok {
+		prefix := before
 		if binary == prefix || strings.HasPrefix(binary, prefix+"/") {
 			return true
 		}

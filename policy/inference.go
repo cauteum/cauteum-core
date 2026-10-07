@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"slices"
 	"strings"
+
+	"github.com/whaleshell/whaleshell-core/defaults"
 )
 
 // Inference names known LLM/API destinations (expanded into egress allow rules).
@@ -85,7 +87,7 @@ var BuiltinProviders = map[string]ProviderPreset{
 	"local": {
 		ID: "local",
 		Rules: []AllowRule{
-			{ID: "inference.local", Host: "host.whaleshell.internal", Ports: []int{11434, 1234, 8000, 8080}},
+			{ID: "inference.local", Host: defaults.HostInternal, Ports: []int{11434, 1234, 8000, 8080}},
 		},
 		EnvKeys: nil,
 	},

@@ -47,3 +47,34 @@ func TestParseRejectsInvalid(t *testing.T) {
 		}
 	}
 }
+
+func TestPatternOverlapAndSelectorExclusions(t *testing.T) {
+	parse := func(value string) Pattern {
+		t.Helper()
+		pattern, err := Parse(value)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return pattern
+	}
+	for _, tc := range []struct {
+		left, right string
+		want        bool
+	}{
+		{"*.example.com", "api.example.com", true},
+		{"*.example.com", "deep.api.example.com", false},
+		{"**.example.com", "deep.api.example.com", true},
+		{"*.example.com", "*.other.com", false},
+	} {
+		if got := parse(tc.left).Overlaps(parse(tc.right)); got != tc.want {
+			t.Errorf("Overlaps(%q, %q)=%v, want %v", tc.left, tc.right, got, tc.want)
+		}
+	}
+	include := []Pattern{parse("*.example.com")}
+	if SelectorMayMatchPattern(include, []Pattern{parse("api.example.com")}, parse("api.example.com")) {
+		t.Fatal("selector should exclude a concrete TLS-skip host")
+	}
+	if !SelectorMayMatchPattern(include, nil, parse("*.example.com")) {
+		t.Fatal("selector should overlap wildcard candidate")
+	}
+}

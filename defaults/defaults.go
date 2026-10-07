@@ -19,31 +19,28 @@ const (
 // GatewayListen is the default whaleshell-gateway bind address.
 const GatewayListen = "127.0.0.1:7443"
 
+// HostInternal is the host gateway alias injected into sandbox DNS.
+const HostInternal = "host.whaleshell.internal"
+
 // ProxyListenHost is used when binding the sidecar on all interfaces inside the netns.
 const ProxyListenHost = "0.0.0.0"
 
 // Guest filesystem layout inside sandboxes.
 const (
 	GuestRoot   = "/whaleshell"
-	GuestData   = "/whaleshell/data"
-	GuestHome   = "/whaleshell/data/home"
-	GuestBin    = "/whaleshell/data/bin"
-	GuestCADir  = "/whaleshell/ca"
-	GuestCAFile = "/whaleshell/ca/ca.pem"
-	GuestPolicy = "/whaleshell/policy.yaml"
-	GuestInit   = "/whaleshell/whaleshell-init"
+	GuestData   = GuestRoot + "/data"
+	GuestHome   = GuestData + "/home"
+	GuestBin    = GuestData + "/bin"
+	GuestCADir  = GuestRoot + "/ca"
+	GuestCAFile = GuestCADir + "/ca.pem"
+	GuestPolicy = GuestRoot + "/policy.yaml"
+	GuestInit   = GuestRoot + "/whaleshell-init"
 	GuestPath   = "/whaleshell/data/home/.local/bin:/whaleshell/data/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-	// GuestEtcOSG is the reserved control tree for agent guidance (skills, payload).
-	// Same role as OpenShell's /etc/openshell; whaleshell naming, MIT-owned content.
-	GuestEtcOSG       = "/etc/whaleshell"
-	GuestSkills       = "/etc/whaleshell/skills"
-	GuestAgentPayload = "/etc/whaleshell/agent-payload"
-
-	// GuestSandboxHome mirrors OpenShell harness HOME (/sandbox/home).
-	// Symlinked to GuestHome on agent-config install so persist volume stays canonical.
-	GuestSandboxRoot = "/sandbox"
-	GuestSandboxHome = "/sandbox/home"
+	// GuestEtcOSG is the reserved control tree for supervisor-owned guidance.
+	// Same role as OpenShell's /etc/openshell; whaleshell naming, Apache-2.0 project content.
+	GuestEtcOSG = "/etc/whaleshell"
+	GuestSkills = GuestEtcOSG + "/skills"
 )
 
 // NoProxyValue is the default NO_PROXY / no_proxy list for sandbox guests.
@@ -107,10 +104,10 @@ func PublishedImage(local string) (string, bool) {
 // Guest SSH layout (whaleshell-sshd). The socket directory is a volume shared
 // with the proxy sidecar (supervisor relay); sshd never listens on TCP.
 const (
-	GuestSSHD      = "/whaleshell/whaleshell-sshd"
-	GuestSSHDir    = "/whaleshell/ssh"
-	GuestSSHSocket = "/whaleshell/ssh/sshd.sock"
-	GuestSSHLog    = "/whaleshell/ssh/sshd.log"
+	GuestSSHD      = GuestRoot + "/whaleshell-sshd"
+	GuestSSHDir    = GuestRoot + "/ssh"
+	GuestSSHSocket = GuestSSHDir + "/sshd.sock"
+	GuestSSHLog    = GuestSSHDir + "/sshd.log"
 	GuestWorkspace = "/workspace"
 )
 
@@ -133,3 +130,12 @@ var ProxyEnvKeys = []string{
 func ProxyListenLocal() string {
 	return fmt.Sprintf("127.0.0.1:%d", ProxyPort)
 }
+
+// Inference API defaults. Provider configuration can override these endpoints.
+const (
+	InferenceOpenAI    = "https://api.openai.com"
+	InferenceAnthropic = "https://api.anthropic.com"
+	InferenceNVIDIA    = "https://integrate.api.nvidia.com"
+	InferenceDeepInfra = "https://api.deepinfra.com"
+	InferenceOllama    = "http://" + HostInternal + ":11434"
+)
