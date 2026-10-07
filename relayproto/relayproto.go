@@ -295,22 +295,39 @@ func (mr *MessageReader) Read() (Message, error) {
 }
 
 // Pipe copies bytes both ways until both directions finish, half-closing
-// writers on EOF, then closes both streams.
-func Pipe(a, b io.ReadWriteCloser) {
+// writers on EOF, then closes both streams. Non-terminal copy and close errors
+// are joined and returned so the caller can log them with operation context.
+func Pipe(a, b io.ReadWriteCloser) error {
+	pipeErrors := make(chan error, 6)
+	report := func(op string, err error) {
+		if err == nil || errors.Is(err, net.ErrClosed) || errors.Is(err, io.ErrClosedPipe) {
+			return
+		}
+		pipeErrors <- fmt.Errorf("%s: %w", op, err)
+	}
+
 	var wg sync.WaitGroup
 	wg.Add(2)
-	cp := func(dst, src io.ReadWriteCloser) {
+	cp := func(direction string, dst, src io.ReadWriteCloser) {
 		defer wg.Done()
-		_, _ = io.Copy(dst, src)
+		_, err := io.Copy(dst, src)
+		report("copy "+direction, err)
 		if cw, ok := dst.(interface{ CloseWrite() error }); ok {
-			_ = cw.CloseWrite()
+			report("half-close "+direction, cw.CloseWrite())
 		} else {
-			_ = dst.Close()
+			report("close "+direction, dst.Close())
 		}
 	}
-	go cp(a, b)
-	go cp(b, a)
+	go cp("a-to-b", b, a)
+	go cp("b-to-a", a, b)
 	wg.Wait()
-	_ = a.Close()
-	_ = b.Close()
+	report("close stream a", a.Close())
+	report("close stream b", b.Close())
+	close(pipeErrors)
+
+	var err error
+	for pipeErr := range pipeErrors {
+		err = errors.Join(err, pipeErr)
+	}
+	return err
 }

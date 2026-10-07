@@ -144,3 +144,16 @@ func TestPipeBridgesBothWays(t *testing.T) {
 		t.Fatal("pipe did not finish")
 	}
 }
+
+type readErrorConn struct{ err error }
+
+func (c readErrorConn) Read([]byte) (int, error)  { return 0, c.err }
+func (readErrorConn) Write(p []byte) (int, error) { return len(p), nil }
+func (readErrorConn) Close() error                { return nil }
+
+func TestPipeReturnsCopyErrors(t *testing.T) {
+	want := errors.New("read failed")
+	if err := Pipe(readErrorConn{err: want}, readErrorConn{err: want}); !errors.Is(err, want) {
+		t.Fatalf("Pipe() error = %v, want wrapped %v", err, want)
+	}
+}
