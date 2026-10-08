@@ -1,8 +1,8 @@
-# Roadmap — whaleshell-core
+# Roadmap — cauteum-core
 
-Status: **v0.1.0-alpha.2** (alpha) · Part of [whaleshell/whaleshell](https://github.com/whaleshell)
+Status: **v0.1.0-alpha.2** (alpha) · Part of [cauteum/cauteum](https://github.com/cauteum)
 
-Shared policy schema and egress engine. Product-wide cleanup and compatibility work is tracked in the [workspace migration checklist](../whaleshell-docs/WORKSPACE_MIGRATION_PLAN.md).
+Shared policy schema and egress engine. Product-wide cleanup and compatibility work is tracked in the [workspace migration checklist](../cauteum-docs/WORKSPACE_MIGRATION_PLAN.md).
 
 ## This module
 

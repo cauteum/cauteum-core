@@ -9,9 +9,9 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/whaleshell/whaleshell-core/internal/hostpattern"
-	"github.com/whaleshell/whaleshell-core/internal/tofu"
-	"github.com/whaleshell/whaleshell-core/policy"
+	"github.com/cauteum/cauteum-core/internal/hostpattern"
+	"github.com/cauteum/cauteum-core/internal/tofu"
+	"github.com/cauteum/cauteum-core/policy"
 )
 
 // Decision is admit / deny for one request.

@@ -4,13 +4,13 @@ import "testing"
 
 func TestPublishedImage(t *testing.T) {
 	cases := map[string]string{
-		ImageLocal:                   ImageBaseRef,
-		"whaleshell-sandbox:base":    ImageBaseRef,
-		ImageGUI:                     ImageGUIRef,
-		ImageGPU:                     ImageGPURef,
-		ImageCursor:                  ImageCursorRef,
-		" Whaleshell-Sandbox:Claude": ImageClaudeRef,
-		ImageCodex:                   ImageCodexRef,
+		ImageLocal:                ImageBaseRef,
+		"cauteum-sandbox:base":    ImageBaseRef,
+		ImageGUI:                  ImageGUIRef,
+		ImageGPU:                  ImageGPURef,
+		ImageCursor:               ImageCursorRef,
+		" Cauteum-Sandbox:Claude": ImageClaudeRef,
+		ImageCodex:                ImageCodexRef,
 	}
 	for in, want := range cases {
 		got, ok := PublishedImage(in)
@@ -18,7 +18,7 @@ func TestPublishedImage(t *testing.T) {
 			t.Fatalf("PublishedImage(%q) = %q, %v; want %q", in, got, ok, want)
 		}
 	}
-	for _, in := range []string{"", "debian:bookworm", "whaleshell-sandbox:mine", "ghcr.io/whaleshell/whaleshell/sandboxes/base:latest"} {
+	for _, in := range []string{"", "debian:bookworm", "cauteum-sandbox:mine", "ghcr.io/cauteum/cauteum/sandboxes/base:latest"} {
 		if got, ok := PublishedImage(in); ok {
 			t.Fatalf("PublishedImage(%q) = %q, want no mapping", in, got)
 		}

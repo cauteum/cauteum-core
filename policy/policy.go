@@ -14,7 +14,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/whaleshell/whaleshell-core/internal/hostpattern"
+	"github.com/cauteum/cauteum-core/internal/hostpattern"
 	"gopkg.in/yaml.v3"
 )
 
@@ -425,7 +425,7 @@ type AllowRule struct {
 	AllowedIPs []string     `yaml:"allowed_ips,omitempty" json:"allowed_ips,omitempty"`
 	// Enforcement is enforce (default) or audit.
 	Enforcement string `yaml:"enforcement,omitempty" json:"enforcement,omitempty"`
-	// CredentialKeys binds whaleshell:resolve:env:KEY rewrite to this endpoint.
+	// CredentialKeys binds cauteum:resolve:env:KEY rewrite to this endpoint.
 	CredentialKeys               []string                       `yaml:"credential_keys,omitempty" json:"credential_keys,omitempty"`
 	CredentialSigning            string                         `yaml:"credential_signing,omitempty" json:"credential_signing,omitempty"`
 	SigningService               string                         `yaml:"signing_service,omitempty" json:"signing_service,omitempty"`
@@ -483,7 +483,7 @@ type JSONRPCConfig struct {
 	MaxBodyBytes *uint32 `yaml:"max_body_bytes,omitempty" json:"max_body_bytes,omitempty"`
 }
 
-// Display is the noVNC surface (whaleshell product extension).
+// Display is the noVNC surface (cauteum product extension).
 type Display struct {
 	Mode    string `yaml:"mode,omitempty" json:"mode,omitempty"` // none | novnc
 	Publish string `yaml:"publish,omitempty" json:"publish,omitempty"`
@@ -492,7 +492,7 @@ type Display struct {
 	Browser string `yaml:"browser,omitempty" json:"browser,omitempty"`
 }
 
-// Credentials controls host-side env injection (whaleshell product extension).
+// Credentials controls host-side env injection (cauteum product extension).
 type Credentials struct {
 	EnvAllow    []string `yaml:"env_allow,omitempty" json:"env_allow,omitempty"`
 	WriteToDisk bool     `yaml:"write_to_disk,omitempty" json:"write_to_disk,omitempty"`

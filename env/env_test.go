@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/whaleshell/whaleshell-core/env"
+	"github.com/cauteum/cauteum-core/env"
 )
 
 func TestFromHostForGuestNoGlobalAPIKeys(t *testing.T) {

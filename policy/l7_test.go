@@ -3,7 +3,7 @@ package policy_test
 import (
 	"testing"
 
-	"github.com/whaleshell/whaleshell-core/policy"
+	"github.com/cauteum/cauteum-core/policy"
 )
 
 func docWithAllows(rules ...policy.AllowRule) policy.Document {

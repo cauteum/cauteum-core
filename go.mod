@@ -1,4 +1,4 @@
-module github.com/whaleshell/whaleshell-core
+module github.com/cauteum/cauteum-core
 
 go 1.27.0
 

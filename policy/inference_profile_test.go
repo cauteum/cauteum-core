@@ -3,13 +3,13 @@ package policy_test
 import (
 	"testing"
 
-	"github.com/whaleshell/whaleshell-core/policy"
+	"github.com/cauteum/cauteum-core/policy"
 )
 
 func TestInferenceProfiles(t *testing.T) {
 	inf := &policy.Inference{
 		Profiles: []policy.ProviderProfile{{
-			ID: "vllm", Host: "host.whaleshell.internal", Port: 8000,
+			ID: "vllm", Host: "host.cauteum.internal", Port: 8000,
 			EnvKeys: []string{"OPENAI_API_KEY"}, Refresh: "env",
 		}},
 	}
@@ -17,7 +17,7 @@ func TestInferenceProfiles(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(rules) != 1 || rules[0].Host != "host.whaleshell.internal" {
+	if len(rules) != 1 || rules[0].Host != "host.cauteum.internal" {
 		t.Fatalf("rules=%v", rules)
 	}
 	keys := policy.EnvKeysForInference(inf)

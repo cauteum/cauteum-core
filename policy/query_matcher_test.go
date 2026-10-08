@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/whaleshell/whaleshell-core/policy"
+	"github.com/cauteum/cauteum-core/policy"
 	"gopkg.in/yaml.v3"
 )
 

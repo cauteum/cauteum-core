@@ -7,7 +7,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/whaleshell/whaleshell-core/internal/tofu"
+	"github.com/cauteum/cauteum-core/internal/tofu"
 )
 
 func TestTOFUFirstThenMismatch(t *testing.T) {

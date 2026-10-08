@@ -3,7 +3,7 @@ package env_test
 import (
 	"testing"
 
-	"github.com/whaleshell/whaleshell-core/env"
+	"github.com/cauteum/cauteum-core/env"
 )
 
 func TestLooksLikeCredential(t *testing.T) {

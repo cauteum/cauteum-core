@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: Copyright (c) 2026 the whaleshell authors
+# SPDX-FileCopyrightText: Copyright (c) 2026 the cauteum authors
 # SPDX-License-Identifier: Apache-2.0
 #
 # gogpu-style CI: format, lint, cross-platform build + test
@@ -135,7 +135,7 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           use_oidc: true
-          files: ./whaleshell-core/coverage.txt
+          files: ./cauteum-core/coverage.txt
           flags: unittests
-          name: codecov-whaleshell-core
+          name: codecov-cauteum-core
           fail_ci_if_error: false

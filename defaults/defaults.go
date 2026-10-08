@@ -1,4 +1,4 @@
-// Package defaults holds shared ports, guest paths, and image names used across whaleshell modules.
+// Package defaults holds shared ports, guest paths, and image names used across cauteum modules.
 package defaults
 
 import (
@@ -16,30 +16,30 @@ const (
 	HTTPPort    = 80
 )
 
-// GatewayListen is the default whaleshell-gateway bind address.
+// GatewayListen is the default cauteum-gateway bind address.
 const GatewayListen = "127.0.0.1:7443"
 
 // HostInternal is the host gateway alias injected into sandbox DNS.
-const HostInternal = "host.whaleshell.internal"
+const HostInternal = "host.cauteum.internal"
 
 // ProxyListenHost is used when binding the sidecar on all interfaces inside the netns.
 const ProxyListenHost = "0.0.0.0"
 
 // Guest filesystem layout inside sandboxes.
 const (
-	GuestRoot   = "/whaleshell"
+	GuestRoot   = "/cauteum"
 	GuestData   = GuestRoot + "/data"
 	GuestHome   = GuestData + "/home"
 	GuestBin    = GuestData + "/bin"
 	GuestCADir  = GuestRoot + "/ca"
 	GuestCAFile = GuestCADir + "/ca.pem"
 	GuestPolicy = GuestRoot + "/policy.yaml"
-	GuestInit   = GuestRoot + "/whaleshell-init"
-	GuestPath   = "/whaleshell/data/home/.local/bin:/whaleshell/data/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+	GuestInit   = GuestRoot + "/cauteum-init"
+	GuestPath   = "/cauteum/data/home/.local/bin:/cauteum/data/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 	// GuestEtcOSG is the reserved control tree for supervisor-owned guidance.
-	// Same role as OpenShell's /etc/openshell; whaleshell naming, Apache-2.0 project content.
-	GuestEtcOSG = "/etc/whaleshell"
+	// Same role as OpenShell's /etc/openshell; cauteum naming, Apache-2.0 project content.
+	GuestEtcOSG = "/etc/cauteum"
 	GuestSkills = GuestEtcOSG + "/skills"
 )
 
@@ -51,20 +51,20 @@ const (
 	ImageDebian = "debian:bookworm"
 	// ImageProxy is the slim base for egress sidecars (not the agent/sandbox image).
 	ImageProxy  = "debian:bookworm-slim"
-	ImageLocal  = "whaleshell-sandbox:local"
-	ImageGUI    = "whaleshell-sandbox:gui"
-	ImageGPU    = "whaleshell-sandbox:gpu"
-	ImageCursor = "whaleshell-sandbox:cursor"
-	ImageClaude = "whaleshell-sandbox:claude"
-	ImageCodex  = "whaleshell-sandbox:codex"
+	ImageLocal  = "cauteum-sandbox:local"
+	ImageGUI    = "cauteum-sandbox:gui"
+	ImageGPU    = "cauteum-sandbox:gpu"
+	ImageCursor = "cauteum-sandbox:cursor"
+	ImageClaude = "cauteum-sandbox:claude"
+	ImageCodex  = "cauteum-sandbox:codex"
 
 	// SandboxPidsLimit is the OpenShell-aligned default PIDs cgroup limit when unset.
 	SandboxPidsLimit int64 = 2048
 
 	// GHCR: separate image per flavor (like openshell-community/sandboxes/<name>).
-	GHCROrg        = "ghcr.io/whaleshell"
-	GHCRGateway    = GHCROrg + "/whaleshell/gateway"
-	GHCRSandboxes  = GHCROrg + "/whaleshell/sandboxes"
+	GHCROrg        = "ghcr.io/cauteum"
+	GHCRGateway    = GHCROrg + "/cauteum/gateway"
+	GHCRSandboxes  = GHCROrg + "/cauteum/sandboxes"
 	ImageBaseRef   = GHCRSandboxes + "/base:latest"
 	ImageGUIRef    = GHCRSandboxes + "/gui:latest"
 	ImageGPURef    = GHCRSandboxes + "/gpu:latest"
@@ -74,13 +74,13 @@ const (
 )
 
 // EnvImagePull controls pulling published images for missing local
-// whaleshell-sandbox:* tags: "never" disables it (offline / local builds only).
-const EnvImagePull = "WHALESHELL_IMAGE_PULL"
+// cauteum-sandbox:* tags: "never" disables it (offline / local builds only).
+const EnvImagePull = "CAUTEUM_IMAGE_PULL"
 
-// PublishedImage maps a local whaleshell-sandbox:<flavor> tag to the GHCR image
+// PublishedImage maps a local cauteum-sandbox:<flavor> tag to the GHCR image
 // CI publishes for it, so installs work without building images locally.
 func PublishedImage(local string) (string, bool) {
-	flavor, ok := strings.CutPrefix(strings.ToLower(strings.TrimSpace(local)), "whaleshell-sandbox:")
+	flavor, ok := strings.CutPrefix(strings.ToLower(strings.TrimSpace(local)), "cauteum-sandbox:")
 	if !ok {
 		return "", false
 	}
@@ -101,10 +101,10 @@ func PublishedImage(local string) (string, bool) {
 	return "", false
 }
 
-// Guest SSH layout (whaleshell-sshd). The socket directory is a volume shared
+// Guest SSH layout (cauteum-sshd). The socket directory is a volume shared
 // with the proxy sidecar (supervisor relay); sshd never listens on TCP.
 const (
-	GuestSSHD      = GuestRoot + "/whaleshell-sshd"
+	GuestSSHD      = GuestRoot + "/cauteum-sshd"
 	GuestSSHDir    = GuestRoot + "/ssh"
 	GuestSSHSocket = GuestSSHDir + "/sshd.sock"
 	GuestSSHLog    = GuestSSHDir + "/sshd.log"
@@ -112,10 +112,10 @@ const (
 )
 
 // HeaderBinary is an optional HTTP header naming the egress client binary (tests / ops).
-const HeaderBinary = "X-WHALESHELL-Binary"
+const HeaderBinary = "X-CAUTEUM-Binary"
 
 // EnvTrustBinaryHeader enables trusting HeaderBinary when set to 1/true/yes.
-const EnvTrustBinaryHeader = "WHALESHELL_TRUST_BINARY_HEADER"
+const EnvTrustBinaryHeader = "CAUTEUM_TRUST_BINARY_HEADER"
 
 // RelayClientTimeout is the CLI/SDK wait for a gateway relay exec round-trip.
 const RelayClientTimeout = 70 * time.Second

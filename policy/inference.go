@@ -5,7 +5,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/whaleshell/whaleshell-core/defaults"
+	"github.com/cauteum/cauteum-core/defaults"
 )
 
 // Inference names known LLM/API destinations (expanded into egress allow rules).
@@ -83,7 +83,7 @@ var BuiltinProviders = map[string]ProviderPreset{
 		}},
 		EnvKeys: []string{"GROQ_API_KEY"},
 	},
-	// Host-backed models via host.whaleshell.internal (OpenShell: host.openshell.internal).
+	// Host-backed models via host.cauteum.internal (OpenShell: host.openshell.internal).
 	"local": {
 		ID: "local",
 		Rules: []AllowRule{

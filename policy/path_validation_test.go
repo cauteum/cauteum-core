@@ -3,7 +3,7 @@ package policy_test
 import (
 	"testing"
 
-	"github.com/whaleshell/whaleshell-core/policy"
+	"github.com/cauteum/cauteum-core/policy"
 )
 
 func TestPathValidationUsesSegments(t *testing.T) {

@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/whaleshell/whaleshell-core/engine"
-	"github.com/whaleshell/whaleshell-core/internal/tofu"
-	"github.com/whaleshell/whaleshell-core/policy"
+	"github.com/cauteum/cauteum-core/engine"
+	"github.com/cauteum/cauteum-core/internal/tofu"
+	"github.com/cauteum/cauteum-core/policy"
 )
 
 func TestBinaryTOFU(t *testing.T) {
