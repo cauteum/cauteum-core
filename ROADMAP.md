@@ -8,8 +8,8 @@ Shared policy schema and egress engine.
 
 | ID | Item | Notes |
 |----|------|-------|
-| C1 | **MCP / L7 depth** | First-class `protocol: mcp` method/tool matchers (hub R5) |
-| C2 | **Policy decision integrations** | Use native OpenShell-shaped policy rules; remote PDP remains an explicit middleware integration (hub R4) |
+| C1 | **MCP / L7 depth** | First-class `protocol: mcp` method/tool matchers |
+| C2 | **Policy decision integrations** | Use native OpenShell-shaped policy rules; remote PDP remains an explicit middleware integration |
 | C3 | **Policy schema freeze** | Stabilize YAML for alpha consumers; versioned migration notes |
 | C4 | **Engine concurrency** | Expand race tests around hot-reload + DecideHTTP |
 
