@@ -3,7 +3,7 @@ package policy_test
 import (
 	"testing"
 
-	"github.com/cauteum-haven/cauteum-core/policy"
+	"github.com/cautem/cauteum-core/policy"
 )
 
 func docWithAllows(rules ...policy.AllowRule) policy.Document {

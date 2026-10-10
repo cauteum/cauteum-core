@@ -18,7 +18,7 @@ func TestPublishedImage(t *testing.T) {
 			t.Fatalf("PublishedImage(%q) = %q, %v; want %q", in, got, ok, want)
 		}
 	}
-	for _, in := range []string{"", "debian:bookworm", "cauteum-sandbox:mine", "ghcr.io/cauteum-haven/cauteum/sandboxes/base:latest"} {
+	for _, in := range []string{"", "debian:bookworm", "cauteum-sandbox:mine", "ghcr.io/cautem/cauteum/sandboxes/base:latest"} {
 		if got, ok := PublishedImage(in); ok {
 			t.Fatalf("PublishedImage(%q) = %q, want no mapping", in, got)
 		}

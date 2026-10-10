@@ -14,7 +14,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/cauteum-haven/cauteum-core/internal/hostpattern"
+	"github.com/cautem/cauteum-core/internal/hostpattern"
 	"gopkg.in/yaml.v3"
 )
 

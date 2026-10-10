@@ -58,7 +58,7 @@ func WarnCredentialEnv(w io.Writer, envMap map[string]string, hints map[string][
 			}
 			fmt.Fprintf(w, "    cauteum sandbox create --provider my-<name> …\n")
 		}
-		fmt.Fprintf(w, "  See: https://cauteum-haven.github.io/guides/credentials/ (use --no-credential-warnings to silence)\n\n")
+		fmt.Fprintf(w, "  See: https://cautem.github.io/cauteum-haven.github.io/guides/credentials/ (use --no-credential-warnings to silence)\n\n")
 	}
 }
 

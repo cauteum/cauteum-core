@@ -5,7 +5,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/cauteum-haven/cauteum-core/defaults"
+	"github.com/cautem/cauteum-core/defaults"
 )
 
 // Inference names known LLM/API destinations (expanded into egress allow rules).

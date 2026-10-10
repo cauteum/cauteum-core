@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/cauteum-haven/cauteum-core/env"
+	"github.com/cautem/cauteum-core/env"
 )
 
 func TestFromHostForGuestNoGlobalAPIKeys(t *testing.T) {

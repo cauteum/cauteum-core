@@ -9,9 +9,9 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/cauteum-haven/cauteum-core/internal/hostpattern"
-	"github.com/cauteum-haven/cauteum-core/internal/tofu"
-	"github.com/cauteum-haven/cauteum-core/policy"
+	"github.com/cautem/cauteum-core/internal/hostpattern"
+	"github.com/cautem/cauteum-core/internal/tofu"
+	"github.com/cautem/cauteum-core/policy"
 )
 
 // Decision is admit / deny for one request.

@@ -5,20 +5,20 @@
   Canonical policy schema, L4/L7 allowlists, host patterns, TOFU, and env placeholders.
 </p>
 <p align="center">
-  <a href="https://github.com/cauteum-haven/cauteum-core/actions/workflows/ci.yml"><img src="https://github.com/cauteum-haven/cauteum-core/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="https://pkg.go.dev/github.com/cauteum-haven/cauteum-core"><img src="https://pkg.go.dev/badge/github.com/cauteum-haven/cauteum-core.svg" alt="Go Reference"></a>
+  <a href="https://github.com/cautem/cauteum-core/actions/workflows/ci.yml"><img src="https://github.com/cautem/cauteum-core/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://pkg.go.dev/github.com/cautem/cauteum-core"><img src="https://pkg.go.dev/badge/github.com/cautem/cauteum-core.svg" alt="Go Reference"></a>
   <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License"></a>
-  <a href="https://github.com/cauteum-haven/cauteum-core"><img src="https://img.shields.io/badge/Go-1.27+-00ADD8?logo=go" alt="Go Version"></a>
+  <a href="https://github.com/cautem/cauteum-core"><img src="https://img.shields.io/badge/Go-1.27+-00ADD8?logo=go" alt="Go Version"></a>
 </p>
 <p align="center">
-  <sub>Part of the <a href="https://github.com/cauteum-haven">cauteum / cauteum</a> ecosystem</sub>
+  <sub>Part of the <a href="https://github.com/cautem">cauteum / cauteum</a> ecosystem</sub>
 </p>
 
 ---
 
 ## Overview
 
-Policy behavior and its security boundaries are documented in the [policy guide](https://cauteum-haven.github.io/guides/policy/) and [security reference](https://cauteum-haven.github.io/concepts/security/).
+Policy behavior and its security boundaries are documented in the [policy guide](https://cautem.github.io/cauteum-haven.github.io/guides/policy/) and [security reference](https://cautem.github.io/cauteum-haven.github.io/concepts/security/).
 
 **cauteum-core** is the shared policy library for cauteum. Every data-plane and control-plane component evaluates egress and filesystem rules from this schema.
 
@@ -36,7 +36,7 @@ Policy behavior and its security boundaries are documented in the [policy guide]
 
 ## Installation
 
-Build this checkout inside the sibling `go.work` workspace with `go test ./...`. The `v0.1.4` release uses the new module path; see [compatibility status](https://cauteum-haven.github.io/reference/openshell-compatibility/).
+Build this checkout inside the sibling `go.work` workspace with `go test ./...`. The `v0.1.5` release uses the new module path; see [compatibility status](https://cautem.github.io/cauteum-haven.github.io/reference/openshell-compatibility/).
 
 **Requirements:** Go 1.27+
 
@@ -50,8 +50,8 @@ package main
 import (
     "fmt"
 
-    "github.com/cauteum-haven/cauteum-core/engine"
-    "github.com/cauteum-haven/cauteum-core/policy"
+    "github.com/cautem/cauteum-core/engine"
+    "github.com/cautem/cauteum-core/policy"
 )
 
 func main() {
@@ -89,9 +89,9 @@ func main() {
 | Resource | Link |
 |----------|------|
 | Roadmap | [ROADMAP.md](./ROADMAP.md) |
-| Organization | [https://github.com/cauteum](https://github.com/cauteum-haven) |
-| Organization overview | [github.com/cauteum](https://github.com/cauteum-haven) |
-| pkg.go.dev | [`github.com/cauteum-haven/cauteum-core`](https://pkg.go.dev/github.com/cauteum-haven/cauteum-core) |
+| Organization | [https://github.com/cautem](https://github.com/cautem) |
+| Organization overview | [github.com/cautem](https://github.com/cautem) |
+| pkg.go.dev | [`github.com/cautem/cauteum-core`](https://pkg.go.dev/github.com/cautem/cauteum-core) |
 
 ## License
 
