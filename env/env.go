@@ -8,7 +8,7 @@ import (
 )
 
 // PlaceholderPrefix is the guest-visible credential marker written into sandbox env.
-const PlaceholderPrefix = "cauteum:resolve:env:"
+const PlaceholderPrefix = "cautem:resolve:env:"
 
 // OpenShellPlaceholderPrefix is accepted on rewrite for OpenShell guest compatibility.
 const OpenShellPlaceholderPrefix = "openshell:resolve:env:"
@@ -112,7 +112,7 @@ func FromHost(extraKeys ...string) []string {
 // FromHostForGuest injects placeholders for credential keys and real values for passthrough keys.
 //
 // Passthrough keys are emitted only when present on the host.
-// Credential extraKeys always get cauteum:resolve:env:KEY placeholders — the real
+// Credential extraKeys always get cautem:resolve:env:KEY placeholders — the real
 // secret lives on the gateway/proxy (host env may be unset after provider refresh).
 //
 // OpenShell semantics: pass provider/policy keys as extraKeys. Do not rely on a
@@ -148,7 +148,7 @@ func SecretsFromHost(extraKeys ...string) []string {
 	return Filter(os.Environ(), secretKeys...)
 }
 
-// PlaceholderFor returns cauteum:resolve:env:KEY.
+// PlaceholderFor returns cautem:resolve:env:KEY.
 func PlaceholderFor(key string) string {
 	return PlaceholderPrefix + key
 }
