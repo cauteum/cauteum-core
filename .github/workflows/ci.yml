@@ -31,7 +31,7 @@ jobs:
 
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.27"
+          go-version: "1.27.2"
           cache: true
       - name: Check gofmt
         run: |
@@ -57,7 +57,7 @@ jobs:
 
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.27"
+          go-version: "1.27.2"
           cache: true
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v8
@@ -83,7 +83,7 @@ jobs:
 
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.27"
+          go-version: "1.27.2"
           cache: true
       - name: Download modules
         run: go mod download
@@ -107,7 +107,7 @@ jobs:
 
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.27"
+          go-version: "1.27.2"
           cache: true
       - name: Download modules
         run: go mod download

@@ -2,6 +2,8 @@ module github.com/cauteum/cauteum-core
 
 go 1.27.0
 
+toolchain go1.27.2
+
 require (
 	github.com/gobwas/glob v0.2.3
 	golang.org/x/sys v0.48.0
