@@ -3,7 +3,7 @@ package policy_test
 import (
 	"testing"
 
-	"github.com/cauteum/cauteum-core/policy"
+	"github.com/cauteum-haven/cauteum-core/policy"
 )
 
 func TestInferenceProfiles(t *testing.T) {

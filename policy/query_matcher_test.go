@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/cauteum/cauteum-core/policy"
+	"github.com/cauteum-haven/cauteum-core/policy"
 	"gopkg.in/yaml.v3"
 )
 

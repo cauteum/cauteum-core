@@ -1,6 +1,6 @@
 # Roadmap — cauteum-core
 
-Status: **v0.1.0-alpha.2** (alpha) · Part of [cauteum/cauteum](https://github.com/cauteum)
+Status: **v0.1.0-alpha.2** (alpha) · Part of [cauteum/cauteum](https://github.com/cauteum-haven)
 
 Shared policy schema and egress engine.
 
