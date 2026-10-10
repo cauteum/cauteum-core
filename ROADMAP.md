@@ -1,6 +1,6 @@
 # Roadmap — cauteum-core
 
-Status: **v0.1.3** (stable numbered release) · Part of [cauteum/cauteum](https://github.com/cauteum-haven)
+Status: **v0.1.4** (stable numbered release) · Part of [cauteum/cauteum](https://github.com/cauteum-haven)
 
 Shared policy schema and egress engine.
 

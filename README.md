@@ -36,7 +36,7 @@ Policy behavior and its security boundaries are documented in the [policy guide]
 
 ## Installation
 
-Build this checkout inside the sibling `go.work` workspace with `go test ./...`. The `v0.1.2` release uses the new module path; see [compatibility status](https://cauteum-haven.github.io/reference/openshell-compatibility/).
+Build this checkout inside the sibling `go.work` workspace with `go test ./...`. The `v0.1.4` release uses the new module path; see [compatibility status](https://cauteum-haven.github.io/reference/openshell-compatibility/).
 
 **Requirements:** Go 1.27+
 
