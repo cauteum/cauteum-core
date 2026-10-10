@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/cautem/cauteum-core/engine"
-	"github.com/cautem/cauteum-core/internal/tofu"
-	"github.com/cautem/cauteum-core/policy"
+	"github.com/cautem/cautem-core/engine"
+	"github.com/cautem/cautem-core/internal/tofu"
+	"github.com/cautem/cautem-core/policy"
 )
 
 func TestBinaryTOFU(t *testing.T) {

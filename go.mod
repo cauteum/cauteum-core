@@ -1,4 +1,4 @@
-module github.com/cautem/cauteum-core
+module github.com/cautem/cautem-core
 
 go 1.27.0
 

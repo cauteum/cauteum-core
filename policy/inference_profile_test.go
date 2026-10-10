@@ -3,13 +3,13 @@ package policy_test
 import (
 	"testing"
 
-	"github.com/cautem/cauteum-core/policy"
+	"github.com/cautem/cautem-core/policy"
 )
 
 func TestInferenceProfiles(t *testing.T) {
 	inf := &policy.Inference{
 		Profiles: []policy.ProviderProfile{{
-			ID: "vllm", Host: "host.cauteum.internal", Port: 8000,
+			ID: "vllm", Host: "host.cautem.internal", Port: 8000,
 			EnvKeys: []string{"OPENAI_API_KEY"}, Refresh: "env",
 		}},
 	}
@@ -17,7 +17,7 @@ func TestInferenceProfiles(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(rules) != 1 || rules[0].Host != "host.cauteum.internal" {
+	if len(rules) != 1 || rules[0].Host != "host.cautem.internal" {
 		t.Fatalf("rules=%v", rules)
 	}
 	keys := policy.EnvKeysForInference(inf)

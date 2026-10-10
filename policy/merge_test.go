@@ -3,7 +3,7 @@ package policy_test
 import (
 	"testing"
 
-	"github.com/cautem/cauteum-core/policy"
+	"github.com/cautem/cautem-core/policy"
 )
 
 func TestMergeGlobalPrependsAllows(t *testing.T) {

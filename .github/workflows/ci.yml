@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: Copyright (c) 2026 the cauteum authors
+# SPDX-FileCopyrightText: Copyright (c) 2026 the cautem authors
 # SPDX-License-Identifier: Apache-2.0
 #
 # gogpu-style CI: format, lint, cross-platform build + test
@@ -135,7 +135,7 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           use_oidc: true
-          files: ./cauteum-core/coverage.txt
+          files: ./cautem-core/coverage.txt
           flags: unittests
-          name: codecov-cauteum-core
+          name: codecov-cautem-core
           fail_ci_if_error: false

@@ -34,14 +34,14 @@ import (
 
 const (
 	// UpgradeProtocol is the HTTP Upgrade token for every relay stream.
-	UpgradeProtocol = "cauteum-relay/1"
+	UpgradeProtocol = "cautem-relay/1"
 
 	PathSupervisorConnect = "/v1/supervisor/connect"
 	PathSupervisorRelay   = "/v1/supervisor/relay/"
 	PathSSHConnect        = "/v1/ssh/connect"
 
 	// HeaderSandboxID names the target sandbox (name or id) on PathSSHConnect.
-	HeaderSandboxID = "X-Cauteum-Sandbox-Id"
+	HeaderSandboxID = "X-cautem-Sandbox-Id"
 
 	// TargetSSH asks the supervisor to dial the sandbox SSH socket.
 	TargetSSH = "ssh"

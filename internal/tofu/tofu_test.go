@@ -7,7 +7,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/cautem/cauteum-core/internal/tofu"
+	"github.com/cautem/cautem-core/internal/tofu"
 )
 
 func TestTOFUFirstThenMismatch(t *testing.T) {
