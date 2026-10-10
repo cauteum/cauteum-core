@@ -18,7 +18,7 @@
 
 ## Overview
 
-Policy behavior and its security boundaries are documented in the [policy guide](https://cauteum.github.io/guides/policy/) and [security reference](https://cauteum.github.io/concepts/security/).
+Policy behavior and its security boundaries are documented in the [policy guide](https://cauteum-haven.github.io/guides/policy/) and [security reference](https://cauteum-haven.github.io/concepts/security/).
 
 **cauteum-core** is the shared policy library for cauteum. Every data-plane and control-plane component evaluates egress and filesystem rules from this schema.
 
@@ -36,7 +36,7 @@ Policy behavior and its security boundaries are documented in the [policy guide]
 
 ## Installation
 
-Build this checkout inside the sibling `go.work` workspace with `go test ./...`. Published alpha tags still require a coordinated module-path release; see [compatibility status](https://cauteum.github.io/reference/openshell-compatibility/).
+Build this checkout inside the sibling `go.work` workspace with `go test ./...`. The `v0.1.2` release uses the new module path; see [compatibility status](https://cauteum-haven.github.io/reference/openshell-compatibility/).
 
 **Requirements:** Go 1.27+
 
