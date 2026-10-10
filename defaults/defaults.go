@@ -62,7 +62,7 @@ const (
 	SandboxPidsLimit int64 = 2048
 
 	// GHCR: separate image per flavor (like openshell-community/sandboxes/<name>).
-	GHCROrg        = "ghcr.io/cauteum"
+	GHCROrg        = "ghcr.io/cauteum-haven"
 	GHCRGateway    = GHCROrg + "/cauteum/gateway"
 	GHCRSandboxes  = GHCROrg + "/cauteum/sandboxes"
 	ImageBaseRef   = GHCRSandboxes + "/base:latest"
